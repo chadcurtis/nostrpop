@@ -1,10 +1,10 @@
 # Project Overview
 
-This project is a Nostr client application built with React 19.x, TailwindCSS 3.x, Vite, shadcn/ui, and Nostrify.
+This project is a Nostr client application built with React 18.x, TailwindCSS 3.x, Vite, shadcn/ui, and Nostrify.
 
 ## Technology Stack
 
-- **React 19**: Latest version of React with improved performance and features
+- **React 18.x**: Stable version of React with hooks, concurrent rendering, and improved performance
 - **TailwindCSS 3.x**: Utility-first CSS framework for styling
 - **Vite**: Fast build tool and development server
 - **shadcn/ui**: Unstyled, accessible UI components built with Radix UI and Tailwind
