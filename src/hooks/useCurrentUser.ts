@@ -10,14 +10,14 @@ export function useCurrentUser() {
 
   const loginToUser = useCallback((login: NLoginType): NUser  => {
     switch (login.type) {
-      case 'nsec':
+      case 'nsec': // Nostr login with secret key
         return NUser.fromNsecLogin(login);
-      case 'bunker':
+      case 'bunker': // Nostr login with NIP-46 "bunker://" URI
         return NUser.fromBunkerLogin(login, nostr);
-      case 'extension':
+      case 'extension': // Nostr login with NIP-07 browser extension
         return NUser.fromExtensionLogin(login);
+      // Other login types can be defined here
       default:
-        // Learn how to define other login types: https://nostrify.dev/react/logins#custom-login-types
         throw new Error(`Unsupported login type: ${login.type}`);
     }
   }, [nostr]);
