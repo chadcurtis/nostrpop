@@ -23,26 +23,25 @@ This project is a Nostr client application built with React 19.x, TailwindCSS 3.
 
 ## Nostr Protocol Integration
 
-The best Nostr library is Nostrify. Use this for all Nostr event and relay functions: https://nostrify.dev/
+This project comes with custom hooks for querying and publishing events on the Nostr network.
 
-Nostrify is a flexible library for building Nostr apps in TypeScript. It provides Relays, Signers, Storages, and more to help you build your app.
+### The `useNostr` Hook
 
-Please read this LLM context for Nostrify: https://nostrify.dev/llms.txt
-
-### Nostrify Import Examples
+The `useNostr` hook returns an object containing a `nostr` property, with `.query()` and `.event()` methods for querying and publishing Nostr events respectively.
 
 ```typescript
-import {
-  NPool,
-  NRelay1,
-  NSchema as n,
-} from '@nostrify/nostrify';
+import { useNostr } from '@nostrify/react';
 
-import { useNostr, NostrContext } from '@nostrify/react';
-import { useNostrLogin, NUser, NLogin, NostrLoginProvider } from '@nostrify/react/login';
+function useCustomHook() {
+  const { nostr } = useNostr();
+
+  // ...
+}
 ```
 
-### Nostrify Example Usage in a Hook
+### Query Nostr Data with `useNostr` and Tanstack Query
+
+When querying Nostr, the best practice is to create custom hooks that combine `useNostr` and `useQuery` to get the required data.
 
 ```typescript
 import { useNostr } from '@nostrify/react';
@@ -60,6 +59,42 @@ function usePosts() {
   });
 }
 ```
+
+The data may be transformed into a more appropriate format if needed, and multiple calls to `nostr.query()` may be made in a single queryFn.
+
+### The `useNostrPublish` Hook
+
+To publish events, use the `useNostrPublish` hook in this project.
+
+```tsx
+import { useState } from 'react';
+
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useNostrPublish } from '@/hooks/useNostrPublish';
+
+export function MyComponent() {
+  const [ data, setData] = useState<Record<string, string>>({});
+
+  const { user } = useCurrentUser();
+  const { mutate: createEvent } = useNostrPublish();
+
+  const handleSubmit = () => {
+    createEvent({ kind: 1, content: data.content });
+  };
+
+  if (!user) {
+    return <span>You must be logged in to use this form.</span>;
+  }
+
+  return (
+    <form onSubmit={handleSubmit} disabled={!user}>
+      {/* ...some input fields */}
+    </form>
+  );
+}
+```
+
+The `useCurrentUser` hook should be used to ensure that the user is logged in before they are able to publish Nostr events.
 
 ## Development Practices
 
