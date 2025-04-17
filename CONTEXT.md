@@ -190,4 +190,6 @@ function MyComponent() {
 
 ## Testing Your Changes
 
-Use `npm run build` to check for build errors.
+Whenever you modify code, you should test your changes after you're finished.
+
+To test your changes, run `npm run build`. The task is not considered finished until there are no build errors.
