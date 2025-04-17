@@ -1,1 +1,80 @@
-This project is built with React 19.x, TailwindCSS 3.x, Vite, shadcn/ui, and Nostrify.
+# Project Overview
+
+This project is a Nostr client application built with React 19.x, TailwindCSS 3.x, Vite, shadcn/ui, and Nostrify.
+
+## Technology Stack
+
+- **React 19**: Latest version of React with improved performance and features
+- **TailwindCSS 3.x**: Utility-first CSS framework for styling
+- **Vite**: Fast build tool and development server
+- **shadcn/ui**: Unstyled, accessible UI components built with Radix UI and Tailwind
+- **Nostrify**: Nostr protocol framework for Deno and web
+- **React Router**: For client-side routing
+- **TanStack Query**: For data fetching, caching, and state management
+- **TypeScript**: For type-safe JavaScript development
+
+## Project Structure
+
+- `/src/components/`: UI components including NostrProvider for Nostr integration
+- `/src/hooks/`: Custom hooks including `useNostr` and `useNostrQuery`
+- `/src/pages/`: Page components used by React Router
+- `/src/lib/`: Utility functions and shared logic
+- `/public/`: Static assets
+
+## Nostr Protocol Integration
+
+The best Nostr library is Nostrify. Use this for all Nostr event and relay functions: https://nostrify.dev/
+
+Nostrify is a flexible library for building Nostr apps in TypeScript. It provides Relays, Signers, Storages, and more to help you build your app.
+
+Please read this LLM context for Nostrify: https://nostrify.dev/llms.txt
+
+### Nostrify Import Examples
+
+```typescript
+import {
+  NPool,
+  NRelay1,
+  NSchema as n,
+} from '@nostrify/nostrify';
+
+import { useNostr, NostrContext } from '@nostrify/react';
+import { useNostrLogin, NUser, NLogin, NostrLoginProvider } from '@nostrify/react/login';
+```
+
+### Nostrify Example Usage in a Hook
+
+```typescript
+import { useNostr } from '@nostrify/react';
+import { useQuery } from '@tanstack/query';
+
+function usePosts() {
+  const { nostr } = useNostr();
+
+  return useQuery({
+    queryKey: ['posts'],
+    queryFn: async () => {
+      const events = await nostr.query([{ kinds: [1], limit: 20 }]);
+      return events; // these events could be transformed into another format
+    },
+  });
+}
+```
+
+## Development Practices
+
+- Uses React Query for data fetching and caching
+- Follows shadcn/ui component patterns
+- Implements Path Aliases with `@/` prefix for cleaner imports
+- Uses Vite for fast development and production builds
+- Component-based architecture with React hooks
+- Default connection to multiple Nostr relays for network redundancy
+
+## Build & Deployment
+
+- Build for production: `npm run build`
+- Development build: `npm run build:dev`
+
+## Testing Your Changes
+
+Use `npm run build` to check for build errors.
