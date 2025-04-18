@@ -12,14 +12,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
 import { useLoginActions } from '@/hooks/useLoginActions';
 
-interface LoginFormProps {
+interface LoginDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onLogin: () => void;
   onSignup?: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ isOpen, onClose, onLogin, onSignup }) => {
+const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin, onSignup }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [nsec, setNsec] = useState('');
   const [bunkerUri, setBunkerUri] = useState('');
@@ -213,4 +213,4 @@ const LoginForm: React.FC<LoginFormProps> = ({ isOpen, onClose, onLogin, onSignu
   );
 };
 
-export default LoginForm;
+export default LoginDialog;

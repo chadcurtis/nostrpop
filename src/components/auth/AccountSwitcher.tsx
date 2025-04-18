@@ -13,8 +13,8 @@ import { useNostrLogin } from '@nostrify/react/login';
 import { useQuery } from '@tanstack/react-query';
 import { useNostr } from '@nostrify/react';
 import { NSchema as n, NostrEvent, NostrMetadata } from '@nostrify/nostrify';
-import LoginForm from './LoginForm';
-import SignupForm from './SignupForm';
+import LoginDialog from './LoginDialog';
+import SignupDialog from './SignupDialog';
 
 interface Account {
   id: string;
@@ -82,14 +82,14 @@ export function AccountSwitcher() {
           <span>Log in</span>
         </Button>
 
-        <LoginForm
+        <LoginDialog
           isOpen={loginDialogOpen} 
           onClose={() => setLoginDialogOpen(false)} 
           onLogin={handleLogin}
           onSignup={() => setSignupDialogOpen(true)}
         />
 
-        <SignupForm
+        <SignupDialog
           isOpen={signupDialogOpen}
           onClose={() => setSignupDialogOpen(false)}
         />
@@ -148,14 +148,14 @@ export function AccountSwitcher() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <LoginForm
+      <LoginDialog
         isOpen={loginDialogOpen} 
         onClose={() => setLoginDialogOpen(false)} 
         onLogin={handleLogin}
         onSignup={() => setSignupDialogOpen(true)}
       />
 
-      <SignupForm
+      <SignupDialog
         isOpen={signupDialogOpen}
         onClose={() => setSignupDialogOpen(false)}
       />

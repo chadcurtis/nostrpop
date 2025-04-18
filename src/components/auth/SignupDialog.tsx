@@ -11,12 +11,12 @@ import {
 import { toast } from '@/hooks/useToast.ts';
 import { generateSecretKey, nip19 } from 'nostr-tools';
 
-interface SignupFormProps {
+interface SignupDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({ isOpen, onClose }) => {
+const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose }) => {
   const [step, setStep] = useState<'generate' | 'download' | 'done'>('generate');
   const [isLoading, setIsLoading] = useState(false);
   const [nsecKey, setNsecKey] = useState('');
@@ -158,4 +158,4 @@ const SignupForm: React.FC<SignupFormProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default SignupForm;
+export default SignupDialog;
