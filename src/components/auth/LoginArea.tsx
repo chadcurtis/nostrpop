@@ -16,9 +16,11 @@ export function LoginArea() {
     setSignupDialogOpen(false);
   };
 
-  if (!currentUser) {
-    return (
-      <>
+  return (
+    <>
+      {currentUser ? (
+        <AccountSwitcher onAddAccountClick={() => setLoginDialogOpen(true)} />
+      ) : (
         <Button
           onClick={() => setLoginDialogOpen(true)}
           className='flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground w-full font-medium transition-all hover:bg-primary/90 animate-scale-in'
@@ -26,27 +28,7 @@ export function LoginArea() {
           <User className='w-4 h-4' />
           <span>Log in</span>
         </Button>
-
-        <LoginDialog
-          isOpen={loginDialogOpen} 
-          onClose={() => setLoginDialogOpen(false)} 
-          onLogin={handleLogin}
-          onSignup={() => setSignupDialogOpen(true)}
-        />
-
-        <SignupDialog
-          isOpen={signupDialogOpen}
-          onClose={() => setSignupDialogOpen(false)}
-        />
-      </>
-    );
-  }
-
-  return (
-    <>
-      <AccountSwitcher 
-        onAddAccountClick={() => setLoginDialogOpen(true)}
-      />
+      )}
 
       <LoginDialog
         isOpen={loginDialogOpen} 
