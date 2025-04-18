@@ -23,15 +23,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ isOpen, onClose, onLogin, onSignu
   const [isLoading, setIsLoading] = useState(false);
   const [nsec, setNsec] = useState('');
   const [bunkerUri, setBunkerUri] = useState('');
-  const [defaultTab, setDefaultTab] = useState('extension');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const login = useLoginActions();
-
-  // Check if Nostr extension exists on component mount
-  useEffect(() => {
-    const hasNostrExtension = 'nostr' in window;
-    setDefaultTab(hasNostrExtension ? 'extension' : 'key');
-  }, []);
 
   const handleExtensionLogin = () => {
     setIsLoading(true);
@@ -109,7 +102,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ isOpen, onClose, onLogin, onSignu
         </DialogHeader>
 
         <div className='px-6 py-8 space-y-6'>
-          <Tabs defaultValue={defaultTab} className='w-full'>
+          <Tabs defaultValue={'nostr' in window ? 'extension' : 'key'} className='w-full'>
             <TabsList className='grid grid-cols-3 mb-6'>
               <TabsTrigger value='extension'>Extension</TabsTrigger>
               <TabsTrigger value='key'>Nsec</TabsTrigger>
