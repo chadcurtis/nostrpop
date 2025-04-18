@@ -186,6 +186,12 @@ The `AccountSwitcher` component displays a "Log in" button when the user is logg
 
 ## Testing Your Changes
 
-Whenever you modify code, you should test your changes after you're finished.
+Whenever you modify code, you should test your changes after you're finished by running:
 
-To test your changes, run `npm run build`. The task is not considered finished until there are no build errors.
+```bash
+npm run ci
+```
+
+This command will typecheck the code and attempt to build it.
+
+Your task is not considered finished until this test passes without errors.
