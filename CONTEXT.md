@@ -152,54 +152,23 @@ The `useCurrentUser` hook should be used to ensure that the user is logged in be
 
 ### Nostr Login
 
-To add Nostr login functionality, use the included `LoginForm` and `SignupForm` dialog components. For example:
+To enable login with Nostr, simply include the `AccountSwitcher` component already included in this project.
 
 ```tsx
-import LoginForm from "@/components/auth/LoginForm";
-import SignupForm from "@/components/auth/SignupForm";
-import { Button } from "@/components/ui/button";
+import { AccountSwitcher } from "@/components/auth/AccountSwitcher";
 
 function MyComponent() {
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
-  const [signupDialogOpen, setSignupDialogOpen] = useState(false);
-
-  const handleLogin = () => {
-    setLoginDialogOpen(false);
-    setSignupDialogOpen(false);
-  };
-
   return (
     <div>
-      <Button onClick={showLoginDialog}>Log in</Button>
-      <Button onClick={showSignupDialog}>Sign up</Button>
+      {/* other components ... */}
 
-      <LoginForm
-        isOpen={loginDialogOpen} 
-        onClose={() => setLoginDialogOpen(false)} 
-        onLogin={handleLogin}
-        onSignup={showSignupDialog}
-      />
-
-      <SignupForm
-        isOpen={signupDialogOpen}
-        onClose={() => setSignupDialogOpen(false)}
-      />
+      <AccountSwitcher />
     </div>
   );
 }
 ```
 
-To access the currently-logged-in account, use the `useCurrentUser` hook, eg:
-
-```typescript
-import { useCurrentUser } from "@/hooks/useCurrentUser";
-
-function MyComponent() {
-  const { user } = useCurrentUser();
-
-  // ...
-}
-```
+The `AccountSwitcher` component displays a "Log in" button when the user is logged out, and changes to an account switcher once the user is logged in.
 
 ## Development Practices
 
