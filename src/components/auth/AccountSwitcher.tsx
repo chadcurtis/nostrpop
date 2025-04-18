@@ -16,6 +16,13 @@ import { NSchema as n, NostrEvent, NostrMetadata } from '@nostrify/nostrify';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 
+interface Account {
+  id: string;
+  pubkey: string;
+  event?: NostrEvent;
+  metadata: NostrMetadata;
+}
+
 export function AccountSwitcher() {
   const { nostr } = useNostr();
   const { logins, setLogin, removeLogin } = useNostrLogin();
@@ -23,11 +30,22 @@ export function AccountSwitcher() {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [signupDialogOpen, setSignupDialogOpen] = useState(false);
 
-  const { data: authors } = useQuery({
-    queryKey: ['logins', logins],
-    queryFn: async () => {
-      const events = await nostr.query([{ kinds: [0], authors: logins.map((l) => l.pubkey) }]);
-      return logins.map(({ id, pubkey }): { id: string; pubkey: string; event?: NostrEvent; metadata: NostrMetadata } => {
+  const { data: authors = [] } = useQuery({
+    queryKey: ['logins', logins.map((l) => l.id).join(';')],
+    queryFn: async ({ signal }) => {
+      let events: NostrEvent[] = [];
+
+      try {
+        events = await nostr.query(
+          [{ kinds: [0], authors: logins.map((l) => l.pubkey) }],
+          { signal: AbortSignal.any([signal, AbortSignal.timeout(500)]) },
+        );
+      } catch (error) {
+        console.error('Error fetching accounts:', error);
+        return [];
+      }
+
+      return logins.map(({ id, pubkey }): Account => {
         const event = events.find((e) => e.pubkey === pubkey);
         try {
           const metadata = n.json().pipe(n.metadata()).parse(event?.content);
@@ -39,15 +57,21 @@ export function AccountSwitcher() {
     }
   });
 
-  const [currentUser, ...otherUsers] = authors || [];
-  const isLoggedIn = !!currentUser;
+  const [_, ...otherUsers] = (authors || []) as [Account | undefined, ...Account[]];
 
   const handleLogin = () => {
     setLoginDialogOpen(false);
     setSignupDialogOpen(false);
   };
 
-  if (!isLoggedIn) {
+  const currentUser: Account | undefined = (() => {
+    const login = logins[0];
+    if (!login) return undefined;
+    const author = authors.find((a) => a.id === login.id);
+    return { metadata: {}, ...author, id: login.id, pubkey: login.pubkey };
+  })();
+
+  if (!currentUser) {
     return (
       <>
         <Button
