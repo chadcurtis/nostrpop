@@ -3,7 +3,7 @@
     "nostr": {
       "type": "stdio",
       "command": "npx",
-      "args": ["xjsr", "@nostrbook/mcp"]
+      "args": ["-y", "xjsr", "@nostrbook/mcp"]
     }
   }
 }
