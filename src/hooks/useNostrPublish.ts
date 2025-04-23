@@ -23,7 +23,7 @@ export function useNostrPublish() {
           tags: t.tags ?? [],
           created_at: t.created_at ?? Math.floor(Date.now() / 1000),
         });
-        nostr.event(event);
+        await nostr.event(event, { signal: AbortSignal.timeout(5000) });
       } else {
         throw new Error("User is not logged in");
       }

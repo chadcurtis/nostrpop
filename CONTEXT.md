@@ -106,8 +106,9 @@ function usePosts() {
 
   return useQuery({
     queryKey: ['posts'],
-    queryFn: async () => {
-      const events = await nostr.query([{ kinds: [1], limit: 20 }]);
+    queryFn: async (c) => {
+      const signal = AbortSignal.any([c.signal, AbortSignal.timeout(1500)]);
+      const events = await nostr.query([{ kinds: [1], limit: 20 }], { signal });
       return events; // these events could be transformed into another format
     },
   });

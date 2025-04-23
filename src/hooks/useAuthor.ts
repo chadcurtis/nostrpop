@@ -14,11 +14,11 @@ export function useAuthor(pubkey: string | undefined) {
 
       const [event] = await nostr.query(
         [{ kinds: [0], authors: [pubkey!], limit: 1 }],
-        { signal: AbortSignal.any([signal, AbortSignal.timeout(500)]) },
+        { signal: AbortSignal.any([signal, AbortSignal.timeout(1500)]) },
       );
 
       if (!event) {
-        return {};
+        throw new Error('No event found');
       }
 
       try {
@@ -28,5 +28,6 @@ export function useAuthor(pubkey: string | undefined) {
         return { event };
       }
     },
+    retry: 3,
   });
 }
