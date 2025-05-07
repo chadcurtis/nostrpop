@@ -3,7 +3,7 @@
   "title": "MKStack",
   "description": "Build Nostr apps in minutes with this React framework",
   "uri": "git+https://gitlab.com/soapbox-pub/mkstack.git",
-  "image": "https://gitlab.com/-/project/69048882/uploads/b11c5fd896cf0997e0f8d714735d9904/image.png",
+  "image": "https://gitlab.com/-/project/69048882/uploads/0a9e3a19f2901d5c772952c1de10ce4f/image.png",
   "commands": [
     "npm",
     "npx"
