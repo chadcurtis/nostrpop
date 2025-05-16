@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog.tsx';
 import { toast } from '@/hooks/useToast.ts';
+import { useLoginActions } from '@/hooks/useLoginActions';
 import { generateSecretKey, nip19 } from 'nostr-tools';
 
 interface SignupDialogProps {
@@ -22,19 +23,19 @@ interface SignupDialogProps {
 const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose }) => {
   const [step, setStep] = useState<'generate' | 'download' | 'done'>('generate');
   const [isLoading, setIsLoading] = useState(false);
-  const [nsecKey, setNsecKey] = useState('');
+  const [nsec, setNsec] = useState('');
+  const login = useLoginActions();
 
   // Generate a proper nsec key using nostr-tools
   const generateKey = () => {
     setIsLoading(true);
     
     try {
-      // Generate a new private key
-      const privateKey = generateSecretKey();
+      // Generate a new secret key
+      const sk = generateSecretKey();
       
       // Convert to nsec format
-      const nsec = nip19.nsecEncode(privateKey);
-      setNsecKey(nsec);
+      setNsec(nip19.nsecEncode(sk));
       setStep('download');
     } catch (error) {
       console.error('Failed to generate key:', error);
@@ -50,7 +51,7 @@ const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose }) => {
 
   const downloadKey = () => {
     // Create a blob with the key text
-    const blob = new Blob([nsecKey], { type: 'text/plain' });
+    const blob = new Blob([nsec], { type: 'text/plain' });
     const url = globalThis.URL.createObjectURL(blob);
 
     // Create a temporary link element and trigger download
@@ -71,6 +72,8 @@ const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose }) => {
   };
 
   const finishSignup = () => {
+    login.nsec(nsec);
+
     setStep('done');
     onClose();
 
@@ -118,7 +121,7 @@ const SignupDialog: React.FC<SignupDialogProps> = ({ isOpen, onClose }) => {
           {step === 'download' && (
             <div className='space-y-6'>
               <div className='p-4 rounded-lg border bg-gray-50 dark:bg-gray-800 overflow-auto'>
-                <code className='text-xs break-all'>{nsecKey}</code>
+                <code className='text-xs break-all'>{nsec}</code>
               </div>
 
               <div className='text-sm text-gray-600 dark:text-gray-300 space-y-2'>
