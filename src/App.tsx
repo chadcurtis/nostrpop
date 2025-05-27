@@ -9,9 +9,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NostrLoginProvider } from '@nostrify/react/login';
 import AppRouter from './AppRouter';
 
-// DO NOT MODIFY THIS LIST UNLESS YOU ARE ABSOLUTELY CERTAIN EACH RELAY URL YOU ARE ADDING IS VALID AND THE RELAY IS CURRENTLY ONLINE AND CONFIRMED TO BE FULLY FUNCTIONAL AND WORKING.
+// DO NOT MODIFY THIS RELAY LIST UNLESS EXPLICITLY REQUESTED
 const defaultRelays = [
-  'wss://relay.nostr.band', // DO NOT MODIFY THIS UNLESS EXPLICITLY REQUESTED
+  'wss://relay.nostr.band',
+  // DO NOT ADD ANY RELAY WITHOUT FIRST USING A TOOL TO VERIFY IT IS ONLINE AND FUNCTIONAL
+  // IF YOU CANNOT VERIFY A RELAY IS ONLINE AND FUNCTIONAL, DO NOT ADD IT HERE
 ];
 
 const queryClient = new QueryClient({
