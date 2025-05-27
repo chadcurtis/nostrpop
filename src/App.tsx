@@ -8,11 +8,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NostrLoginProvider } from '@nostrify/react/login';
 import AppRouter from './AppRouter';
-import { useLocation } from 'react-router-dom';
 
 // DO NOT MODIFY THIS RELAY LIST UNLESS EXPLICITLY REQUESTED
 const defaultRelays = [
-  'wss://relay.nostr.band',
+  'wss://ditto.pub/relay',
   // DO NOT ADD ANY RELAY WITHOUT FIRST USING A TOOL TO VERIFY IT IS ONLINE AND FUNCTIONAL
   // IF YOU CANNOT VERIFY A RELAY IS ONLINE AND FUNCTIONAL, DO NOT ADD IT HERE
 ];
@@ -28,8 +27,6 @@ const queryClient = new QueryClient({
 });
 
 export function App() {
-  const location = useLocation();
-
   return (
     <NostrLoginProvider storageKey='nostr:login'>
       <NostrProvider relays={defaultRelays}>
