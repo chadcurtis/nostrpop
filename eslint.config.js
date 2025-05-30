@@ -47,7 +47,16 @@ export default tseslint.config(
     rules: {
       "@html-eslint/require-title": "error",
       "@html-eslint/require-meta-charset": "error",
+      "@html-eslint/require-meta-description": "error",
       "@html-eslint/require-meta-viewport": "error",
+      "@html-eslint/require-open-graph-protocol": [
+        "error",
+        [
+          "og:type",
+          "og:title",
+          "og:description",
+        ],
+      ],
       "custom/require-webmanifest": "error",
     },
   }
