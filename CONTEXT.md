@@ -75,23 +75,6 @@ The project uses shadcn/ui components located in `@/components/ui`. These are un
 
 These components follow a consistent pattern using React's `forwardRef` and use the `cn()` utility for class name merging. Many are built on Radix UI primitives for accessibility and customized with Tailwind CSS.
 
-## Theme Toggle Component
-
-A pre-built theme toggle component is available for easy integration:
-
-```tsx
-import { ThemeToggle } from "@/components/theme-toggle";
-
-function Header() {
-  return (
-    <header>
-      <h1>My App</h1>
-      <ThemeToggle />
-    </header>
-  );
-}
-```
-
 ## Nostr Protocol Integration
 
 This project comes with custom hooks for querying and publishing events on the Nostr network.
