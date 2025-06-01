@@ -210,13 +210,15 @@ function MyComponent() {
     <div>
       {/* other components ... */}
 
-      <LoginArea />
+      <LoginArea className="max-w-60" />
     </div>
   );
 }
 ```
 
-The `LoginArea` component displays a "Log in" button when the user is logged out, and changes to an account switcher once the user is logged in. It handles all the login-related UI and interactions internally, including displaying login dialogs and switching between accounts. It should not be wrapped in any conditional logic.
+The `LoginArea` component handles all the login-related UI and interactions, including displaying login dialogs and switching between accounts. It should not be wrapped in any conditional logic.
+
+`LoginArea` displays a "Log in" button when the user is logged out, and changes to an account switcher once the user is logged in. It is an inline-flex element by default. To make it expand to the width of its container, you can pass a className like `flex` (to make it a block element) or `w-full`. If it is left as inline-flex, it's recommended to set a max width.
 
 ### `npub`, `naddr`, and other Nostr addresses
 
