@@ -20,7 +20,7 @@ export function LoginArea() {
   };
 
   return (
-    <>
+    <div className="flex items-center justify-center max-w-60">
       {currentUser ? (
         <AccountSwitcher onAddAccountClick={() => setLoginDialogOpen(true)} />
       ) : (
@@ -44,6 +44,6 @@ export function LoginArea() {
         isOpen={signupDialogOpen}
         onClose={() => setSignupDialogOpen(false)}
       />
-    </>
+    </div>
   );
 }
