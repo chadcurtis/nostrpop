@@ -75,4 +75,30 @@ describe('NoteContent', () => {
     expect(screen.getByText('This is just plain text without any links.')).toBeInTheDocument();
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
+
+  it('renders hashtags as links', () => {
+    const event: NostrEvent = {
+      id: 'test-id',
+      pubkey: 'test-pubkey',
+      created_at: Math.floor(Date.now() / 1000),
+      kind: 1,
+      tags: [],
+      content: 'This is a post about #nostr and #bitcoin development.',
+      sig: 'test-sig',
+    };
+
+    render(
+      <TestApp>
+        <NoteContent event={event} />
+      </TestApp>
+    );
+
+    const nostrHashtag = screen.getByRole('link', { name: '#nostr' });
+    const bitcoinHashtag = screen.getByRole('link', { name: '#bitcoin' });
+    
+    expect(nostrHashtag).toBeInTheDocument();
+    expect(bitcoinHashtag).toBeInTheDocument();
+    expect(nostrHashtag).toHaveAttribute('href', '/t/nostr');
+    expect(bitcoinHashtag).toHaveAttribute('href', '/t/bitcoin');
+  });
 });
