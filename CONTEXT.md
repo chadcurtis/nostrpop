@@ -64,6 +64,7 @@ The project uses shadcn/ui components located in `@/components/ui`. These are un
 - **Skeleton**: Loading placeholder
 - **Slider**: Input for selecting a value from a range
 - **Sonner**: Toast notification manager
+- **Spinner**: Animated loading spinner
 - **Switch**: Toggle switch control
 - **Table**: Data table with headers and rows
 - **Tabs**: Tabbed interface component

@@ -1,9 +1,11 @@
 // NOTE: This file should normally not be modified unless you are adding a new provider.
 // To add new routes, edit the AppRouter.tsx file.
 
+import { Suspense } from 'react';
 import NostrProvider from '@/components/NostrProvider'
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
+import { Spinner } from '@/components/ui/spinner';
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -36,7 +38,9 @@ export function App() {
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <AppRouter />
+              <Suspense fallback={<div className="flex items-center justify-center h-screen"><Spinner /></div>}>
+                <AppRouter />
+              </Suspense>
             </TooltipProvider>
           </QueryClientProvider>
         </NostrProvider>

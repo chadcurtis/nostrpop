@@ -1,8 +1,10 @@
+import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
 import { ScrollToTop } from "./components/ScrollToTop";
+
+// Lazy load page components
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 export function AppRouter() {
   return (
