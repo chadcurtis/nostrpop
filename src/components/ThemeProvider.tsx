@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Theme, ThemeProviderContext } from "@/lib/theme-context"
+import { type Theme, ThemeContext } from "@/lib/ThemeContext"
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -61,9 +61,9 @@ export function ThemeProvider({
   }
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <ThemeContext.Provider {...props} value={value}>
       {children}
-    </ThemeProviderContext.Provider>
+    </ThemeContext.Provider>
   )
 }
 
