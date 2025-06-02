@@ -14,7 +14,7 @@ import AppRouter from './AppRouter';
 
 // DO NOT MODIFY THIS RELAY LIST UNLESS EXPLICITLY REQUESTED
 const defaultRelays = [
-  'wss://ditto.pub/relay',
+  'wss://relay.nostr.band/',
   // DO NOT ADD ANY RELAY WITHOUT FIRST USING A TOOL TO VERIFY IT IS ONLINE AND FUNCTIONAL
   // IF YOU CANNOT VERIFY A RELAY IS ONLINE AND FUNCTIONAL, DO NOT ADD IT HERE
 ];
