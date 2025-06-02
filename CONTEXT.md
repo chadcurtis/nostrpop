@@ -389,9 +389,9 @@ export function Post(/* ...props */) {
 
 ## Design Customization
 
-**Always tailor the site's look and feel based on the user's specific request.** This includes:
+**Tailor the site's look and feel based on the user's specific request.** This includes:
 
-- **Color schemes**: Use exact colors if specified by the user, otherwise choose an appropriate scheme that matches the application's purpose and aesthetic
+- **Color schemes**: Incorporate the user's color preferences when specified, and choose an appropriate scheme that matches the application's purpose and aesthetic
 - **Dark mode**: The project includes a ThemeProvider that defaults to light mode. If the application will likely need dark mode (e.g., developer tools, content platforms, social apps), implement dark mode support as components are created and switch the ThemeProvider to use system theme by default
 - **Typography**: Choose fonts that match the requested aesthetic (modern, elegant, playful, etc.)
 - **Layout**: Follow the requested structure (3-column, sidebar, grid, etc.)
