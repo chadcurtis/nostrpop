@@ -16,7 +16,7 @@ This project is a Nostr client application built with React 18.x, TailwindCSS 3.
 ## Project Structure
 
 - `/src/components/`: UI components including NostrProvider for Nostr integration
-- `/src/hooks/`: Custom hooks including `useNostr` and `useNostrQuery`
+- `/src/hooks/`: Custom hooks including `useNostr`, `useAuthor`, `useCurrentUser`, `useNostrPublish`, `useUploadFile`, and others
 - `/src/pages/`: Page components used by React Router
 - `/src/lib/`: Utility functions and shared logic
 - `/public/`: Static assets
@@ -42,7 +42,7 @@ The project uses shadcn/ui components located in `@/components/ui`. These are un
 - **Command**: Command palette for keyboard-first interfaces
 - **ContextMenu**: Right-click menu component
 - **Dialog**: Modal window overlay
-- **Drawer**: Side-sliding panel
+- **Drawer**: Side-sliding panel (using vaul)
 - **DropdownMenu**: Menu that appears from a trigger element
 - **Form**: Form validation and submission handling
 - **HoverCard**: Card that appears when hovering over an element
@@ -167,7 +167,7 @@ interface NostrMetadata {
 
 ### The `useNostrPublish` Hook
 
-To publish events, use the `useNostrPublish` hook in this project.
+To publish events, use the `useNostrPublish` hook in this project. This hook automatically adds a "client" tag to published events.
 
 ```tsx
 import { useState } from 'react';
@@ -314,7 +314,7 @@ The `EditProfileForm` component displays just the form. It requires no props, an
 
 ### Uploading Files on Nostr
 
-Use the `useUploadFile` hook to upload files.
+Use the `useUploadFile` hook to upload files. This hook uses Blossom servers for file storage and returns NIP-94 compatible tags.
 
 ```tsx
 import { useUploadFile } from "@/hooks/useUploadFile";
@@ -392,7 +392,7 @@ export function Post(/* ...props */) {
 **Tailor the site's look and feel based on the user's specific request.** This includes:
 
 - **Color schemes**: Incorporate the user's color preferences when specified, and choose an appropriate scheme that matches the application's purpose and aesthetic
-- **Dark mode**: The project includes a ThemeProvider that defaults to light mode. If the application will likely need dark mode (e.g., developer tools, content platforms, social apps), implement dark mode support as components are created and switch the ThemeProvider to use system theme by default
+- **Dark mode**: The project includes a ThemeProvider that defaults to light mode but supports "light", "dark", and "system" themes. If the application will likely need dark mode (e.g., developer tools, content platforms, social apps), implement dark mode support as components are created and switch the ThemeProvider to use system theme by default
 - **Typography**: Choose fonts that match the requested aesthetic (modern, elegant, playful, etc.)
 - **Layout**: Follow the requested structure (3-column, sidebar, grid, etc.)
 - **Component styling**: Use appropriate border radius, shadows, and spacing for the desired feel
@@ -459,7 +459,7 @@ When users specify color schemes:
 
 ### Test Setup
 
-Wrap components with the `TestApp` component to provide required context providers:
+The project includes a `TestApp` component that provides all necessary context providers for testing. Wrap components with this component to provide required context providers:
 
 ```tsx
 import { describe, it, expect } from 'vitest';
