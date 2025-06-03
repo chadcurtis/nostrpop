@@ -14,9 +14,9 @@ interface RelayInfo {
 
 // Available relay options
 export const RELAY_OPTIONS: RelayInfo[] = [
-  { url: 'wss://relay.damus.io', name: 'Damus' },
   { url: 'wss://ditto.pub/relay', name: 'Ditto' },
   { url: 'wss://relay.nostr.band', name: 'Nostr.Band' },
+  { url: 'wss://relay.damus.io', name: 'Damus' },
   { url: 'wss://relay.primal.net', name: 'Primal' },
 ];
 
