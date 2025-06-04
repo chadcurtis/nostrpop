@@ -9,17 +9,35 @@ This project is a Nostr client application built with React 18.x, TailwindCSS 3.
 - **Vite**: Fast build tool and development server
 - **shadcn/ui**: Unstyled, accessible UI components built with Radix UI and Tailwind
 - **Nostrify**: Nostr protocol framework for Deno and web
-- **React Router**: For client-side routing
+- **React Router**: For client-side routing with BrowserRouter and ScrollToTop functionality
 - **TanStack Query**: For data fetching, caching, and state management
 - **TypeScript**: For type-safe JavaScript development
 
 ## Project Structure
 
 - `/src/components/`: UI components including NostrProvider for Nostr integration
-- `/src/hooks/`: Custom hooks including `useNostr`, `useAuthor`, `useCurrentUser`, `useNostrPublish`, `useUploadFile`, and others
-- `/src/pages/`: Page components used by React Router
+  - `/src/components/ui/`: shadcn/ui components (48+ components available)
+  - `/src/components/auth/`: Authentication-related components (LoginArea, LoginDialog, etc.)
+- `/src/hooks/`: Custom hooks including:
+  - `useNostr`: Core Nostr protocol integration
+  - `useAuthor`: Fetch user profile data by pubkey
+  - `useCurrentUser`: Get currently logged-in user
+  - `useNostrPublish`: Publish events to Nostr
+  - `useUploadFile`: Upload files via Blossom servers
+  - `useAppContext`: Access global app configuration
+  - `useTheme`: Theme management
+  - `useToast`: Toast notifications
+  - `useLocalStorage`: Persistent local storage
+  - `useLoggedInAccounts`: Manage multiple accounts
+  - `useLoginActions`: Authentication actions
+  - `useIsMobile`: Responsive design helper
+- `/src/pages/`: Page components used by React Router (Index, NotFound)
 - `/src/lib/`: Utility functions and shared logic
+- `/src/contexts/`: React context providers (AppContext)
+- `/src/test/`: Testing utilities including TestApp component
 - `/public/`: Static assets
+- `App.tsx`: Main app component with provider setup
+- `AppRouter.tsx`: React Router configuration
 
 ## UI Components
 
@@ -378,6 +396,33 @@ export function Post(/* ...props */) {
 }
 ```
 
+## App Configuration
+
+The project includes an `AppProvider` that manages global application state including theme and relay configuration. The default configuration includes:
+
+```typescript
+const defaultConfig: AppConfig = {
+  theme: "light",
+  relayUrl: "wss://relay.nostr.band",
+};
+```
+
+Preset relays are available including Ditto, Nostr.Band, Damus, and Primal. The app uses local storage to persist user preferences.
+
+## Routing
+
+The project uses React Router with a centralized routing configuration in `AppRouter.tsx`. To add new routes:
+
+1. Create your page component in `/src/pages/`
+2. Import it in `AppRouter.tsx`
+3. Add the route above the catch-all `*` route:
+
+```tsx
+<Route path="/your-path" element={<YourComponent />} />
+```
+
+The router includes automatic scroll-to-top functionality and a 404 NotFound page for unmatched routes.
+
 ## Development Practices
 
 - Uses React Query for data fetching and caching
@@ -386,6 +431,7 @@ export function Post(/* ...props */) {
 - Uses Vite for fast development and production builds
 - Component-based architecture with React hooks
 - Default connection to one Nostr relay for best performance
+- Comprehensive provider setup with NostrLoginProvider, QueryClientProvider, and custom AppProvider
 
 ## Design Customization
 
@@ -437,13 +483,22 @@ To add custom fonts, follow these steps:
 - **Creative/Artistic**: Poppins, Nunito, or Comfortaa
 - **Technical/Code**: JetBrains Mono, Fira Code, or Source Code Pro (for monospace)
 
+### Theme System
+
+The project includes a complete light/dark theme system using CSS custom properties. The theme can be controlled via:
+
+- `useTheme` hook for programmatic theme switching
+- CSS custom properties defined in `src/index.css`
+- Automatic dark mode support with `.dark` class
+
 ### Color Scheme Implementation
 
 When users specify color schemes:
-- Update CSS custom properties in `src/index.css`
+- Update CSS custom properties in `src/index.css` (both `:root` and `.dark` selectors)
 - Use Tailwind's color palette or define custom colors
 - Ensure proper contrast ratios for accessibility
 - Apply colors consistently across components (buttons, links, accents)
+- Test both light and dark mode variants
 
 ### Component Styling Patterns
 
@@ -457,6 +512,12 @@ When users specify color schemes:
 **Important for AI Assistants**: Only create tests when the user is experiencing a specific problem or explicitly requests tests. Do not proactively write tests for new features or components unless the user is having issues that require testing to diagnose or resolve.
 
 ### Test Setup
+
+The project uses Vitest with jsdom environment and includes comprehensive test setup:
+
+- **Testing Library**: React Testing Library with jest-dom matchers
+- **Test Environment**: jsdom with mocked browser APIs (matchMedia, scrollTo, IntersectionObserver, ResizeObserver)
+- **Test App**: `TestApp` component provides all necessary context providers for testing
 
 The project includes a `TestApp` component that provides all necessary context providers for testing. Wrap components with this component to provide required context providers:
 
