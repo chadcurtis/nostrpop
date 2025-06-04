@@ -495,13 +495,6 @@ import { Card, CardContent } from '@/components/ui/card';
 </div>
 ```
 
-**Key principles for empty states:**
-- Keep text minimal and clear
-- Use dashed borders to indicate empty/placeholder state
-- Include the RelaySelector to provide actionable next steps
-- Center content with generous whitespace (`py-12 px-8`)
-- Constrain width with `max-w-sm mx-auto` for focused layout
-
 ## Design Customization
 
 **Tailor the site's look and feel based on the user's specific request.** This includes:
