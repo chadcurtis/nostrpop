@@ -3,7 +3,6 @@
 
 import { Suspense } from 'react';
 import NostrProvider from '@/components/NostrProvider'
-import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -24,23 +23,21 @@ const queryClient = new QueryClient({
 
 export function App() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="theme">
-      <AppProvider>
-        <QueryClientProvider client={queryClient}>
-          <NostrLoginProvider storageKey='nostr:login'>
-            <NostrProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <Suspense>
-                  <AppRouter />
-                </Suspense>
-              </TooltipProvider>
-            </NostrProvider>
-          </NostrLoginProvider>
-        </QueryClientProvider>
-      </AppProvider>
-    </ThemeProvider>
+    <AppProvider defaultTheme="light">
+      <QueryClientProvider client={queryClient}>
+        <NostrLoginProvider storageKey='nostr:login'>
+          <NostrProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <Suspense>
+                <AppRouter />
+              </Suspense>
+            </TooltipProvider>
+          </NostrProvider>
+        </NostrLoginProvider>
+      </QueryClientProvider>
+    </AppProvider>
   );
 }
 

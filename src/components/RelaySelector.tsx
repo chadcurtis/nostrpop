@@ -46,7 +46,7 @@ export function RelaySelector({ className }: RelaySelectorProps) {
   const handleAddCustomRelay = (url: string) => {
     const normalizedUrl = normalizeRelayUrl(url);
     if (normalizedUrl) {
-      updateConfig("relayUrl", normalizedUrl);
+      updateConfig(config => ({ ...config, relayUrl: normalizedUrl }));
       setOpen(false);
       setInputValue("");
     }
@@ -130,7 +130,7 @@ export function RelaySelector({ className }: RelaySelectorProps) {
                     key={option.url}
                     value={option.url}
                     onSelect={(currentValue) => {
-                      updateConfig("relayUrl", currentValue);
+                      updateConfig(config => ({ ...config, relayUrl: currentValue }));
                       setOpen(false);
                       setInputValue("");
                     }}

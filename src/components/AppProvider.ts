@@ -1,6 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect } from 'react';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+
+export type Theme = "dark" | "light" | "system";
 
 interface AppConfig {
+  /** Current theme */
+  theme: Theme;
   /** Selected relay URL */
   relayUrl: string;
 }
@@ -22,64 +27,97 @@ export const RELAY_OPTIONS: RelayInfo[] = [
 
 // Default application configuration
 const DEFAULT_CONFIG: AppConfig = {
+  theme: 'system',
   relayUrl: 'wss://relay.nostr.band',
 };
 
 interface AppContextType {
   /** Current application configuration */
   config: AppConfig;
-  /** Update any configuration value */
-  updateConfig: <K extends keyof AppConfig>(key: K, value: AppConfig[K]) => void;
+  /** Update configuration using a callback that receives current config and returns new config */
+  updateConfig: (updater: (currentConfig: AppConfig) => AppConfig) => void;
   /** Available relay options */
   availableRelays: RelayInfo[];
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'nostr:app-config';
+const APP_CONFIG_STORAGE_KEY = 'nostr:app-config';
 
 interface AppProviderProps {
   children: ReactNode;
+  /** Default theme for the application */
+  defaultTheme?: Theme;
 }
 
-export function AppProvider({ children }: AppProviderProps) {
-  const [config, setConfig] = useState<AppConfig>(DEFAULT_CONFIG);
-
-  // Load saved config from localStorage on mount
+export function AppProvider({ 
+  children, 
+  defaultTheme = 'system'
+}: AppProviderProps) {
+  // App configuration state with localStorage persistence
+  const [config, setConfig] = useLocalStorage(
+    APP_CONFIG_STORAGE_KEY,
+    { ...DEFAULT_CONFIG, theme: defaultTheme }
+  );
+/**
+ * Hook to apply theme changes to the document root
+ */
+function useThemeEffect(theme: Theme) {
   useEffect(() => {
-    try {
-      const savedConfig = localStorage.getItem(STORAGE_KEY);
-      if (savedConfig) {
-        const parsed = JSON.parse(savedConfig);
-        // Merge with defaults to handle new config options
-        setConfig(prev => ({ ...prev, ...parsed }));
-      }
-    } catch (error) {
-      console.warn('Failed to load app config from localStorage:', error);
-    }
-  }, []);
+    const root = window.document.documentElement;
 
-  // Save config to localStorage when it changes
+    root.classList.remove('light', 'dark');
+
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+        .matches
+        ? 'dark'
+        : 'light';
+
+      root.classList.add(systemTheme);
+      return;
+    }
+
+    root.classList.add(theme);
+  }, [theme]);
+
+  // Handle system theme changes when theme is set to "system"
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-    } catch (error) {
-      console.warn('Failed to save app config to localStorage:', error);
-    }
-  }, [config]);
+    if (theme !== 'system') return;
 
-  // Generic config updater
-  const updateConfig = <K extends keyof AppConfig>(key: K, value: AppConfig[K]) => {
-    setConfig(prev => ({ ...prev, [key]: value }));
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const handleChange = () => {
+      const root = window.document.documentElement;
+      root.classList.remove('light', 'dark');
+      
+      const systemTheme = mediaQuery.matches ? 'dark' : 'light';
+      root.classList.add(systemTheme);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [theme]);
+}
+  // Apply theme effects to document
+  useThemeEffect(config.theme);
+
+  // Generic config updater with callback pattern
+  const updateConfig = (updater: (currentConfig: AppConfig) => AppConfig) => {
+    setConfig(updater);
   };
 
-  const contextValue: AppContextType = {
+  const appContextValue: AppContextType = {
     config,
     updateConfig,
     availableRelays: RELAY_OPTIONS,
   };
 
-  return React.createElement(AppContext.Provider, { value: contextValue }, children);
+  return React.createElement(
+    AppContext.Provider,
+    { value: appContextValue },
+    children
+  );
 }
 
 /**
@@ -92,4 +130,60 @@ export function useAppConfig() {
     throw new Error('useAppConfig must be used within an AppProvider');
   }
   return context;
+}
+
+/**
+ * Hook to get and set the active theme
+ * @returns Theme context with theme and setTheme
+ */
+export function useTheme() {
+  const context = useContext(AppContext);
+  if (context === undefined) {
+    throw new Error('useTheme must be used within an AppProvider');
+  }
+  return {
+    theme: context.config.theme,
+    setTheme: (theme: Theme) => context.updateConfig(config => ({ ...config, theme })),
+  };
+}
+
+/**
+ * Hook to apply theme changes to the document root
+ */
+export function useThemeEffect(theme: Theme) {
+  useEffect(() => {
+    const root = window.document.documentElement;
+
+    root.classList.remove('light', 'dark');
+
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+        .matches
+        ? 'dark'
+        : 'light';
+
+      root.classList.add(systemTheme);
+      return;
+    }
+
+    root.classList.add(theme);
+  }, [theme]);
+
+  // Handle system theme changes when theme is set to "system"
+  useEffect(() => {
+    if (theme !== 'system') return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const handleChange = () => {
+      const root = window.document.documentElement;
+      root.classList.remove('light', 'dark');
+      
+      const systemTheme = mediaQuery.matches ? 'dark' : 'light';
+      root.classList.add(systemTheme);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [theme]);
 }
