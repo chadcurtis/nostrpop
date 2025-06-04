@@ -9,6 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NostrLoginProvider } from '@nostrify/react/login';
 import { AppProvider } from '@/components/AppProvider';
+import { AppConfig } from '@/contexts/AppContext';
 import AppRouter from './AppRouter';
 
 const queryClient = new QueryClient({
@@ -21,9 +22,14 @@ const queryClient = new QueryClient({
   },
 });
 
+const defaultConfig: AppConfig = {
+  theme: "light",
+  relayUrl: "wss://relay.nostr.band",
+};
+
 export function App() {
   return (
-    <AppProvider defaultTheme="light">
+    <AppProvider storageKey="nostr:app-config" defaultConfig={defaultConfig}>
       <QueryClientProvider client={queryClient}>
         <NostrLoginProvider storageKey='nostr:login'>
           <NostrProvider>

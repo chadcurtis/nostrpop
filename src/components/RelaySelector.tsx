@@ -14,15 +14,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAppConfig } from "@/components/AppProvider";
+import { useAppConfig } from "@/hooks/useAppConfig";
 import { useState } from "react";
 
 interface RelaySelectorProps {
   className?: string;
+  availableRelays?: { name: string; url: string }[];
 }
 
-export function RelaySelector({ className }: RelaySelectorProps) {
-  const { config, updateConfig, availableRelays } = useAppConfig();
+export function RelaySelector({ className, availableRelays = [] }: RelaySelectorProps) {
+  const { config, updateConfig } = useAppConfig();
+
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
