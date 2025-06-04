@@ -12,7 +12,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
 import { RelaySelector } from '@/components/RelaySelector';
 import { useLoggedInAccounts, type Account } from '@/hooks/useLoggedInAccounts';
-import { useAppContext } from '@/hooks/useAppContext';
 import { genUserName } from '@/lib/genUserName';
 
 interface AccountSwitcherProps {
@@ -20,7 +19,6 @@ interface AccountSwitcherProps {
 }
 
 export function AccountSwitcher({ onAddAccountClick }: AccountSwitcherProps) {
-  const { config, updateConfig, presetRelays } = useAppContext();
   const { currentUser, otherUsers, setLogin, removeLogin } = useLoggedInAccounts();
 
   if (!currentUser) return null;
@@ -45,12 +43,7 @@ export function AccountSwitcher({ onAddAccountClick }: AccountSwitcherProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56 p-2 animate-scale-in'>
         <div className='font-medium text-sm px-2 py-1.5'>Switch Relay</div>
-        <RelaySelector
-          className="w-full"
-          selectedRelay={config.relayUrl}
-          setSelectedRelay={(relayUrl) => updateConfig((config) => ({ ...config, relayUrl }))}
-          presetRelays={presetRelays}
-        />
+        <RelaySelector className="w-full" />
         <DropdownMenuSeparator />
         <div className='font-medium text-sm px-2 py-1.5'>Switch Account</div>
         {otherUsers.map((user) => (

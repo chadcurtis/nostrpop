@@ -15,16 +15,20 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
+import { useAppContext } from "@/hooks/useAppContext";
 
 interface RelaySelectorProps {
   className?: string;
-  selectedRelay?: string;
-  setSelectedRelay: (relay: string) => void;
-  presetRelays?: { name: string; url: string }[];
 }
 
 export function RelaySelector(props: RelaySelectorProps) {
-  const { selectedRelay, setSelectedRelay, className, presetRelays = [] } = props;
+  const { className } = props;
+  const { config, updateConfig, presetRelays = [] } = useAppContext();
+  
+  const selectedRelay = config.relayUrl;
+  const setSelectedRelay = (relay: string) => {
+    updateConfig((current) => ({ ...current, relayUrl: relay }));
+  };
 
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");

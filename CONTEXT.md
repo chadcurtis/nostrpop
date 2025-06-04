@@ -472,6 +472,36 @@ The router includes automatic scroll-to-top functionality and a 404 NotFound pag
 </Card>
 ```
 
+### Empty States and No Content Found
+
+When no content is found (empty search results, no data available, etc.), display a minimalist empty state with the `RelaySelector` component. This allows users to easily switch relays to discover content from different sources.
+
+```tsx
+import { RelaySelector } from '@/components/RelaySelector';
+import { Card, CardContent } from '@/components/ui/card';
+
+// Empty state example
+<div className="col-span-full">
+  <Card className="border-dashed">
+    <CardContent className="py-12 px-8 text-center">
+      <div className="max-w-sm mx-auto space-y-6">
+        <p className="text-muted-foreground">
+          No results found. Try another relay?
+        </p>
+        <RelaySelector className="w-full" />
+      </div>
+    </CardContent>
+  </Card>
+</div>
+```
+
+**Key principles for empty states:**
+- Keep text minimal and clear
+- Use dashed borders to indicate empty/placeholder state
+- Include the RelaySelector to provide actionable next steps
+- Center content with generous whitespace (`py-12 px-8`)
+- Constrain width with `max-w-sm mx-auto` for focused layout
+
 ## Design Customization
 
 **Tailor the site's look and feel based on the user's specific request.** This includes:
