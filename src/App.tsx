@@ -3,6 +3,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createHead, UnheadProvider } from '@unhead/react/client';
+import { InferSeoMetaPlugin } from '@unhead/addons';
 import { Suspense } from 'react';
 import NostrProvider from '@/components/NostrProvider';
 import { Toaster } from "@/components/ui/toaster";
@@ -13,7 +14,11 @@ import { AppProvider } from '@/components/AppProvider';
 import { AppConfig } from '@/contexts/AppContext';
 import AppRouter from './AppRouter';
 
-const head = createHead();
+const head = createHead({
+  plugins: [
+    InferSeoMetaPlugin(),
+  ],
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {
