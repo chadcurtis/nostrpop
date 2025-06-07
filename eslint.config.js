@@ -68,6 +68,7 @@ export default tseslint.config(
           "og:description",
         ],
       ],
+      "custom/no-inline-script": "error",
       "custom/require-webmanifest": "error",
     },
   }
