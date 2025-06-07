@@ -15,7 +15,7 @@ export function useNostrPublish(): UseMutationResult<NostrEvent> {
         const tags = t.tags ?? [];
 
         // Add the client tag if it doesn't exist
-        if (!tags.some((tag) => tag[0] === "client")) {
+        if (location.protocol === "https:" && !tags.some(([name]) => name === "client")) {
           tags.push(["client", location.hostname]);
         }
 
