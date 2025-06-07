@@ -136,6 +136,46 @@ Options:
 Decision: Use NIP-99 + farming-specific tags for best balance
 ```
 
+#### Tag Design Principles
+
+When designing tags for Nostr events, follow these principles:
+
+1. **Kind vs Tags Separation**:
+   - **Kind** = Schema/structure (how the data is organized)
+   - **Tags** = Semantics/categories (what the data represents)
+   - Don't create different kinds for the same data structure
+
+2. **Use Single-Letter Tags for Categories**:
+   - **Relays only index single-letter tags** for efficient querying
+   - Use `t` tags for categorization, not custom multi-letter tags
+   - Multiple `t` tags allow items to belong to multiple categories
+
+3. **Relay-Level Filtering**:
+   - Design tags to enable efficient relay-level filtering with `#t: ["category"]`
+   - Avoid client-side filtering when relay-level filtering is possible
+   - Consider query patterns when designing tag structure
+
+4. **Tag Examples**:
+   ```json
+   // ❌ Wrong: Multi-letter tag, not queryable at relay level
+   ["product_type", "electronics"]
+   
+   // ✅ Correct: Single-letter tag, relay-indexed and queryable
+   ["t", "electronics"]
+   ["t", "smartphone"]
+   ["t", "android"]
+   ```
+
+5. **Querying Best Practices**:
+   ```typescript
+   // ❌ Inefficient: Get all events, filter in JavaScript
+   const events = await nostr.query([{ kinds: [30402] }]);
+   const filtered = events.filter(e => hasTag(e, 'product_type', 'electronics'));
+   
+   // ✅ Efficient: Filter at relay level
+   const events = await nostr.query([{ kinds: [30402], '#t': ['electronics'] }]);
+   ```
+
 ### Kind Ranges
 
 An event's kind number determines the event's behavior and storage characteristics:
