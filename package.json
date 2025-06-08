@@ -7,7 +7,7 @@
     "dev": "npm i && vite",
     "build": "npm i && vite build && cp dist/index.html dist/404.html",
     "test": "npm i && tsc -p tsconfig.app.json --noEmit && eslint && vitest run && vite build",
-    "deploy": "npm run build && npx -y surge@latest dist"
+    "deploy": "npm run build && vercel whoami && vercel --prod --yes"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -86,6 +86,7 @@
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
+    "vercel": "^42.3.0",
     "vite": "^6.3.5",
     "vitest": "^3.1.4"
   }
