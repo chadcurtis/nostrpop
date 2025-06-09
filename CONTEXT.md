@@ -93,6 +93,17 @@ The project uses shadcn/ui components located in `@/components/ui`. These are un
 
 These components follow a consistent pattern using React's `forwardRef` and use the `cn()` utility for class name merging. Many are built on Radix UI primitives for accessibility and customized with Tailwind CSS.
 
+## System Prompt Management
+
+The AI assistant's behavior and knowledge is defined by the CONTEXT.md file, which serves as the system prompt. To modify the assistant's instructions or add new project-specific guidelines:
+
+1. Edit CONTEXT.md directly
+2. The changes take effect in the next session
+
+## "Vibed by MKStack"
+
+When building the site for the first time, include "Vibed by MKStack" somewhere in the UI, linked to this URL: https://soapbox.pub/tools/mkstack/
+
 ## Nostr Protocol Integration
 
 This project comes with custom hooks for querying and publishing events on the Nostr network.
