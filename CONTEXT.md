@@ -197,6 +197,37 @@ An event's kind number determines the event's behavior and storage characteristi
 
 Kinds below 1000 are considered "legacy" kinds, and may have different storage characteristics based on their kind definition. For example, kind 1 is regular, while kind 3 is replaceable.
 
+### Content Field Design Principles
+
+When designing new event kinds, the `content` field should be used for semantically important data that doesn't need to be queried by relays. **Structured JSON data generally shouldn't go in the content field** (kind 0 being an early exception).
+
+#### Guidelines
+
+- **Use content for**: Large text, freeform human-readable content, or existing industry-standard JSON formats (Tiled maps, FHIR, GeoJSON)
+- **Use tags for**: Queryable metadata, structured data, anything that needs relay-level filtering
+- **Empty content is valid**: Many events need only tags with `content: ""`
+- **Relays only index tags**: If you need to filter by a field, it must be a tag
+
+#### Example
+
+**✅ Good - queryable data in tags:**
+```json
+{
+  "kind": 30402,
+  "content": "",
+  "tags": [["d", "product-123"], ["title", "Camera"], ["price", "250"], ["t", "photography"]]
+}
+```
+
+**❌ Bad - structured data in content:**
+```json
+{
+  "kind": 30402,
+  "content": "{\"title\":\"Camera\",\"price\":250,\"category\":\"photo\"}",
+  "tags": [["d", "product-123"]]
+}
+```
+
 ### NIP.md
 
 The file `NIP.md` is used by this project to define a custom Nostr protocol document. If the file doesn't exist, it means this project doesn't have any custom kinds associated with it.
