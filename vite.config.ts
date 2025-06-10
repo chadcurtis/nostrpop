@@ -1,6 +1,5 @@
 import path from "node:path";
 
-import prerender from "@prerenderer/rollup-plugin";
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vitest/config";
 
@@ -12,12 +11,6 @@ export default defineConfig(() => ({
   },
   plugins: [
     react(),
-    prerender({
-      routes: [
-        "/",
-        // Add more routes to prerender...
-      ],
-    }),
   ],
   test: {
     globals: true,

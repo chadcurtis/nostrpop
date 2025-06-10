@@ -69,8 +69,6 @@
     "@eslint/js": "^9.9.0",
     "@html-eslint/eslint-plugin": "^0.41.0",
     "@html-eslint/parser": "^0.41.0",
-    "@prerenderer/renderer-puppeteer": "^1.2.4",
-    "@prerenderer/rollup-plugin": "^0.3.12",
     "@tailwindcss/typography": "^0.5.15",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
