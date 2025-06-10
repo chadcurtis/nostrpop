@@ -2,6 +2,7 @@ image: node:22
 
 default:
   interruptible: true
+  timeout: 1 minute
 
 stages:
   - build
