@@ -110,9 +110,9 @@ This project comes with custom hooks for querying and publishing events on the N
 
 ### Nostr Implementation Guidelines
 
-- Before implementing features on Nostr, use the `read_nips_index` tool to see what kinds are currently in use across all NIPs.
-- If any existing kind or NIP might offer the required functionality, use the `read_nip` tool to investigate. Several NIPs may need to be read before making a decision.
-- If there are no existing suitable kinds, new kind numbers can be generated with the `generate_kind` tool.
+- Before implementing features on Nostr, use the `nostr__read_nips_index` tool to see what kinds are currently in use across all NIPs.
+- If any existing kind or NIP might offer the required functionality, use the `nostr__read_nip` tool to investigate. Several NIPs may need to be read before making a decision.
+- If there are no existing suitable kinds, new kind numbers can be generated with the `nostr__generate_kind` tool.
 
 Knowing when to create a new kind versus reusing an existing kind requires careful judgement. Introducing new kinds means the project won't be interoperable with existing clients. But deviating too far from the schema of a particular kind can cause different interoperability issues.
 
@@ -120,7 +120,7 @@ Knowing when to create a new kind versus reusing an existing kind requires caref
 
 When implementing features that could use existing NIPs, follow this decision framework:
 
-1. **Thorough NIP Review**: Before considering a new kind, always perform a comprehensive review of existing NIPs and their associated kinds. Use the `read_nips_index` tool to get an overview, and then `read_nip` and `read_kind` to investigate any potentially relevant NIPs or kinds in detail. The goal is to find the closest existing solution.
+1. **Thorough NIP Review**: Before considering a new kind, always perform a comprehensive review of existing NIPs and their associated kinds. Use the `nostr__read_nips_index` tool to get an overview, and then `read_nip` and `read_kind` to investigate any potentially relevant NIPs or kinds in detail. The goal is to find the closest existing solution.
 
 2. **Prioritize Existing NIPs**: Always prefer extending or using existing NIPs over creating custom kinds, even if they require minor compromises in functionality.
 
@@ -711,14 +711,14 @@ import { Card, CardContent } from '@/components/ui/card';
 
 To add custom fonts, follow these steps:
 
-1. **Install a font package** using the npm_add_package tool:
+1. **Install a font package** using the `js-dev__npm_add_package` tool:
    
    **Any Google Font can be installed** using the @fontsource packages. Examples:
-   - For Inter Variable: `npm_add_package({ name: "@fontsource-variable/inter" })`
-   - For Roboto: `npm_add_package({ name: "@fontsource/roboto" })`
-   - For Outfit Variable: `npm_add_package({ name: "@fontsource-variable/outfit" })`
-   - For Poppins: `npm_add_package({ name: "@fontsource/poppins" })`
-   - For Open Sans: `npm_add_package({ name: "@fontsource/open-sans" })`
+   - For Inter Variable: `js-dev__npm_add_package({ name: "@fontsource-variable/inter" })`
+   - For Roboto: `js-dev__npm_add_package({ name: "@fontsource/roboto" })`
+   - For Outfit Variable: `js-dev__npm_add_package({ name: "@fontsource-variable/outfit" })`
+   - For Poppins: `js-dev__npm_add_package({ name: "@fontsource/poppins" })`
+   - For Open Sans: `js-dev__npm_add_package({ name: "@fontsource/open-sans" })`
    
    **Format**: `@fontsource/[font-name]` or `@fontsource-variable/[font-name]` (for variable fonts)
 
@@ -806,6 +806,6 @@ describe('MyComponent', () => {
 
 ## Testing Your Changes
 
-Whenever you are finished modifying code, you must run the **test** script using the **run_script** tool.
+Whenever you are finished modifying code, you must run the **test** script using the **js-dev__run_script** tool.
 
 **Your task is not considered finished until this test passes without errors.**
