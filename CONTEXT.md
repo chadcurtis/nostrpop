@@ -120,7 +120,7 @@ Knowing when to create a new kind versus reusing an existing kind requires caref
 
 When implementing features that could use existing NIPs, follow this decision framework:
 
-1. **Thorough NIP Review**: Before considering a new kind, always perform a comprehensive review of existing NIPs and their associated kinds. Use the `nostr__read_nips_index` tool to get an overview, and then `read_nip` and `read_kind` to investigate any potentially relevant NIPs or kinds in detail. The goal is to find the closest existing solution.
+1. **Thorough NIP Review**: Before considering a new kind, always perform a comprehensive review of existing NIPs and their associated kinds. Use the `nostr__read_nips_index` tool to get an overview, and then `nostr__read_nip` and `nostr__read_kind` to investigate any potentially relevant NIPs or kinds in detail. The goal is to find the closest existing solution.
 
 2. **Prioritize Existing NIPs**: Always prefer extending or using existing NIPs over creating custom kinds, even if they require minor compromises in functionality.
 
