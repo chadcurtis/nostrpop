@@ -135,6 +135,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ isOpen, onClose, onLogin, onS
                     Enter your nsec
                   </label>
                   <Input
+                    type='password'
                     id='nsec'
                     value={nsec}
                     onChange={(e) => setNsec(e.target.value)}
