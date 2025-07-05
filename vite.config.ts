@@ -19,6 +19,9 @@ export default defineConfig(() => ({
     onConsoleLog(log) {
       return !log.includes("React Router Future Flag Warning");
     },
+    env: {
+      DEBUG_PRINT_LIMIT: '0', // Suppress DOM output that exceeds AI context windows
+    },
   },
   resolve: {
     alias: {
