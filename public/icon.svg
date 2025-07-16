@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="sparkleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#cardGradient)" />
+  
+  <!-- Card shape -->
+  <rect x="156" y="180" width="200" height="140" rx="16" ry="16" fill="white" opacity="0.95" />
+  
+  <!-- Card content lines -->
+  <rect x="176" y="200" width="120" height="8" rx="4" fill="url(#cardGradient)" opacity="0.7" />
+  <rect x="176" y="220" width="160" height="6" rx="3" fill="url(#cardGradient)" opacity="0.5" />
+  <rect x="176" y="235" width="140" height="6" rx="3" fill="url(#cardGradient)" opacity="0.5" />
+  
+  <!-- Heart icon -->
+  <path d="M256 280 L246 270 Q240 264 240 256 Q240 248 246 242 Q252 236 260 236 Q268 236 274 242 Q280 248 280 256 Q280 264 274 270 Z" fill="#ec4899" />
+  
+  <!-- Sparkles -->
+  <g fill="url(#sparkleGradient)">
+    <!-- Large sparkle top-left -->
+    <path d="M180 160 L185 170 L195 165 L185 175 L180 185 L175 175 L165 165 L175 170 Z" />
+    
+    <!-- Medium sparkle top-right -->
+    <path d="M340 170 L343 176 L349 173 L343 179 L340 185 L337 179 L331 173 L337 176 Z" />
+    
+    <!-- Small sparkle bottom-left -->
+    <circle cx="170" cy="320" r="4" />
+    
+    <!-- Small sparkle bottom-right -->
+    <circle cx="350" cy="310" r="3" />
+    
+    <!-- Tiny sparkles -->
+    <circle cx="200" cy="150" r="2" />
+    <circle cx="320" cy="340" r="2" />
+  </g>
+</svg>
