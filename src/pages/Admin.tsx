@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LoginArea } from '@/components/auth/LoginArea';
 import { CardManagement } from '@/components/cards/CardManagement';
 import { ProductManagement } from '@/components/marketplace/ProductManagement';
+import { CategoryManagement } from '@/components/marketplace/CategoryManagement';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import {
   Plus,
@@ -23,7 +24,12 @@ import {
   TrendingUp,
   Eye,
   Edit,
-  Database
+  Database,
+  Palette,
+  ShoppingBag,
+  Tags,
+  CreditCard,
+  Grid3X3
 } from 'lucide-react';
 
 const Admin = () => {
@@ -123,18 +129,37 @@ const Admin = () => {
     {
       title: 'Product Management',
       description: 'Create and manage marketplace products',
-      icon: Settings,
+      icon: ShoppingBag,
       color: 'from-orange-500 to-red-500',
-      action: () => navigate('/shop?tab=admin'),
+      action: () => setActiveTab('shop'),
       badge: 'Products'
     },
     {
-      title: 'Shop Analytics',
-      description: 'View sales and performance metrics',
-      icon: BarChart3,
+      title: 'Category Management',
+      description: 'Add, edit, or remove product categories',
+      icon: Tags,
       color: 'from-indigo-500 to-purple-500',
-      action: () => navigate('/shop'),
-      badge: 'Analytics'
+      action: () => setActiveTab('categories'),
+      badge: 'Categories'
+    }
+  ];
+
+  const artActions = [
+    {
+      title: 'Artwork Gallery',
+      description: 'View and manage your art portfolio',
+      icon: Palette,
+      color: 'from-pink-500 to-rose-500',
+      action: () => navigate('/art'),
+      badge: 'Gallery'
+    },
+    {
+      title: '100M Canvas',
+      description: 'Collaborative pixel art project',
+      icon: Grid3X3,
+      color: 'from-purple-500 to-indigo-500',
+      action: () => navigate('/canvas'),
+      badge: 'Canvas'
     }
   ];
 
@@ -201,10 +226,24 @@ const Admin = () => {
 
         {/* Admin Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 max-w-4xl mx-auto mb-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="cards">Cards</TabsTrigger>
-            <TabsTrigger value="shop">Shop</TabsTrigger>
+            <TabsTrigger value="cards">
+              <CreditCard className="h-4 w-4 mr-2" />
+              Cards
+            </TabsTrigger>
+            <TabsTrigger value="shop">
+              <ShoppingBag className="h-4 w-4 mr-2" />
+              Shop
+            </TabsTrigger>
+            <TabsTrigger value="art">
+              <Palette className="h-4 w-4 mr-2" />
+              Art
+            </TabsTrigger>
+            <TabsTrigger value="categories">
+              <Tags className="h-4 w-4 mr-2" />
+              Categories
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-8">
@@ -283,6 +322,43 @@ const Admin = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Art & Canvas Section */}
+              <div>
+                <h2 className="text-2xl font-semibold mb-6 text-center">Art & Creative Projects</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                  {artActions.map((action, index) => (
+                    <Card
+                      key={index}
+                      className="group hover:shadow-xl transition-all duration-300 cursor-pointer bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg"
+                      onClick={action.action}
+                    >
+                      <CardHeader className="pb-4">
+                        <div className="flex items-center justify-between">
+                          <div className={`p-3 rounded-lg bg-gradient-to-r ${action.color} text-white`}>
+                            <action.icon className="h-6 w-6" />
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {action.badge}
+                          </Badge>
+                        </div>
+                        <CardTitle className="text-xl group-hover:text-purple-600 transition-colors">
+                          {action.title}
+                        </CardTitle>
+                        <CardDescription className="text-base">
+                          {action.description}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="flex items-center text-purple-600 group-hover:text-purple-700 transition-colors">
+                          <span className="text-sm font-medium">Access</span>
+                          <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
             </div>
           </TabsContent>
 
@@ -292,6 +368,56 @@ const Admin = () => {
 
           <TabsContent value="shop">
             <ProductManagement />
+          </TabsContent>
+
+          <TabsContent value="art">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Palette className="h-6 w-6 mr-2" />
+                  Artwork Management
+                </CardTitle>
+                <CardDescription>
+                  Manage your artwork gallery and listings
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="text-center py-12">
+                  <Palette className="h-16 w-16 mx-auto text-purple-300 mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Artwork Manager</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Create, edit, and manage your artworks from the Art page
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button onClick={() => navigate('/art')} size="lg">
+                      <Palette className="mr-2 h-5 w-5" />
+                      Go to Art Gallery
+                    </Button>
+                    <Button onClick={() => navigate('/art?action=create')} size="lg" variant="outline">
+                      <Plus className="mr-2 h-5 w-5" />
+                      Create New Artwork
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="categories">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Tags className="h-6 w-6 mr-2" />
+                  Shop Category Management
+                </CardTitle>
+                <CardDescription>
+                  Add, edit, or remove product categories for your shop
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <CategoryManagement />
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
 
