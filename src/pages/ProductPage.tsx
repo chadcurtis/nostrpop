@@ -3,18 +3,31 @@ import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/hooks/usePayment';
 import { useMarketplaceProduct } from '@/hooks/useMarketplaceProducts';
+import { useLivePrice } from '@/hooks/useLivePrice';
 import { useToast } from '@/hooks/useToast';
 import { ImageGallery } from '@/components/marketplace/ImageGallery';
-import { ArrowLeft, Package, Truck, Star, Shield, Heart, Share2, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Package, Truck, Star, Shield, Heart, Share2, ExternalLink, Zap, ShoppingCart } from 'lucide-react';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
   const { data: product, isLoading } = useMarketplaceProduct(productId || '');
   const { toast } = useToast();
+
+  // Fetch live price from source URL
+  const { data: livePrice, isLoading: priceLoading } = useLivePrice(
+    product?.contact_url || product?.product_url,
+    product?.price,
+    product?.currency
+  );
+
+  const displayPrice = livePrice?.price ?? product?.price ?? 0;
+  const displayCurrency = livePrice?.currency ?? product?.currency ?? 'USD';
+  const displayPriceInSats = livePrice?.priceInSats;
 
   useEffect(() => {
     if (!isLoading && !product) {
@@ -50,20 +63,20 @@ export function ProductPage() {
   const hasShipping = product.shipping && product.shipping.length > 0;
   const shippingCost = hasShipping && product.shipping ? product.shipping[0].cost : 0;
   const isOutOfStock = product.quantity !== undefined && product.quantity <= 0;
-  const hasContactUrl = product.contact_url && product.contact_url.trim() !== '';
+  const hasBuyUrl = product.contact_url && product.contact_url.trim() !== '';
 
-  const handleContactSeller = () => {
-    if (hasContactUrl) {
+  const handleBuyProduct = () => {
+    if (hasBuyUrl) {
       window.open(product.contact_url, '_blank', 'noopener,noreferrer');
       toast({
-        title: "Opening Contact Page",
-        description: "Redirecting you to the seller's contact page...",
+        title: "Redirecting to Store",
+        description: "Opening product page on storeofvalue.eu...",
       });
     } else {
       // Fallback action when no contact URL is provided
       toast({
-        title: "Contact Information Unavailable",
-        description: "This seller hasn't provided contact information. Please check the product description for alternative contact methods.",
+        title: "Purchase Link Unavailable",
+        description: "This product doesn't have a purchase link. Please check the product description.",
         variant: "destructive"
       });
     }
@@ -91,14 +104,23 @@ export function ProductPage() {
               </Badge>
               <Badge variant="secondary" className="text-xs">
                 <Package className="w-3 h-3 mr-1" />
-                Physical Product
+                {product.type === 'digital' ? 'Digital Product' : 'Physical Product'}
               </Badge>
               {isOutOfStock && (
                 <Badge variant="destructive" className="text-xs">
                   Out of Stock
                 </Badge>
               )}
+              {hasBuyUrl && (
+                <Badge variant="default" className="text-xs bg-blue-500">
+                  <ExternalLink className="w-3 h-3 mr-1" />
+                  External Product
+                </Badge>
+              )}
             </div>
+            <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
+            <p className="text-xl text-muted-foreground">{product.description}</p>
+          </div>
 
             <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
               {product.name}
@@ -214,31 +236,68 @@ export function ProductPage() {
                 </div>
               </div>
 
+              {/* Product Details */}
+              {product.specs && product.specs.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center">
+                      <Package className="w-5 h-5 mr-2" />
+                      Product Details
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {product.specs.map(([key, value], index) => (
+                        <div key={index} className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">{key}:</span>
+                          <span className="font-medium">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Shipping Info */}
               {hasShipping && (
-                <>
-                  <Separator />
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base flex items-center">
-                        <Truck className="w-4 h-4 mr-2" />
-                        Shipping Information
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>Standard Shipping:</span>
-                          <span className="font-medium">{formatCurrency(shippingCost, product.currency)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Estimated Delivery:</span>
-                          <span className="font-medium">5-7 business days</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center">
+                      <Truck className="w-5 h-5 mr-2" />
+                      Shipping
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Standard shipping: {formatCurrency(shippingCost, product.currency)}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+              
+              {/* Source Link */}
+              {hasBuyUrl && (
+                <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center text-blue-700 dark:text-blue-300">
+                      <ExternalLink className="w-5 h-5 mr-2" />
+                      Source
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <a 
+                      href={product.contact_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:underline break-all"
+                    >
+                      {product.contact_url}
+                    </a>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Live prices fetched from source
+                    </p>
+                  </CardContent>
+                </Card>
               )}
             </div>
           </div>
