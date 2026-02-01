@@ -1,153 +1,78 @@
-export interface ProductCategory {
+// Marketplace categories configuration
+
+export interface Category {
   id: string;
   name: string;
   description?: string;
   icon?: string;
-  featured: boolean;
-  createdAt: string;
 }
 
-// Default categories with some featured ones
-export const DEFAULT_CATEGORIES: ProductCategory[] = [
-  {
-    id: 'electronics',
-    name: 'Electronics',
-    description: 'Gadgets, devices, and electronic accessories',
-    icon: '📱',
-    featured: true,
-    createdAt: new Date().toISOString()
-  },
+export const CATEGORIES: Category[] = [
   {
     id: 'art',
     name: 'Art',
-    description: 'Digital art, NFTs, and creative works',
-    icon: '🎨',
-    featured: true,
-    createdAt: new Date().toISOString()
+    description: 'Artwork and prints',
+    icon: '🎨'
   },
   {
-    id: 'software',
-    name: 'Software',
-    description: 'Applications, tools, and digital products',
-    icon: '💻',
-    featured: true,
-    createdAt: new Date().toISOString()
+    id: 'tshirts',
+    name: 'T-shirts',
+    description: 'Apparel and clothing',
+    icon: '👕'
   },
   {
-    id: 'clothing',
-    name: 'Clothing',
-    description: 'Fashion and apparel',
-    icon: '👕',
-    featured: false,
-    createdAt: new Date().toISOString()
+    id: 'keychains',
+    name: 'Keychains',
+    description: 'Accessories and keychains',
+    icon: '🔑'
   },
   {
-    id: 'shoes',
-    name: 'Shoes',
-    description: 'Footwear and accessories',
-    icon: '👟',
-    featured: false,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'jewelry',
-    name: 'Jewelry',
-    description: 'Accessories and precious items',
-    icon: '💎',
-    featured: false,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'accessories',
-    name: 'Accessories',
-    description: 'Various accessories and add-ons',
-    icon: '👜',
-    featured: false,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'books',
-    name: 'Books',
-    description: 'Digital and physical books',
-    icon: '📚',
-    featured: false,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'music',
-    name: 'Music',
-    description: 'Audio files, albums, and music content',
-    icon: '🎵',
-    featured: false,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'games',
-    name: 'Games',
-    description: 'Video games and gaming content',
-    icon: '🎮',
-    featured: false,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'food',
-    name: 'Food',
-    description: 'Food products and recipes',
-    icon: '🍕',
-    featured: false,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'other',
-    name: 'Other',
-    description: 'Miscellaneous products',
-    icon: '📦',
-    featured: false,
-    createdAt: new Date().toISOString()
+    id: 'digital',
+    name: 'Digital Downloads',
+    description: 'Digital products and downloads',
+    icon: '💾'
   }
 ];
 
-// Local storage key for categories
-export const CATEGORIES_STORAGE_KEY = 'bitpop-marketplace-categories';
+// Get all category names
+export function getCategoryNames(): string[] {
+  return CATEGORIES.map(cat => cat.name);
+}
 
-// Helper functions for category management
-export function getStoredCategories(): ProductCategory[] {
-  try {
-    const stored = localStorage.getItem(CATEGORIES_STORAGE_KEY);
-    if (stored) {
-      const categories = JSON.parse(stored);
-      // Ensure we have at least the default categories
-      if (categories.length === 0) {
-        return DEFAULT_CATEGORIES;
-      }
-      return categories;
-    }
-  } catch (error) {
-    console.error('Error loading categories from storage:', error);
+// Get category by name
+export function getCategoryByName(name: string): Category | undefined {
+  return CATEGORIES.find(cat => cat.name.toLowerCase() === name.toLowerCase());
+}
+
+// Get category by id
+export function getCategoryById(id: string): Category | undefined {
+  return CATEGORIES.find(cat => cat.id === id);
+}
+
+// Add a new category (admin function)
+export function addCategory(category: Category): Category[] {
+  // Check if category already exists
+  const exists = CATEGORIES.find(cat => cat.id === category.id || cat.name === category.name);
+  if (exists) {
+    throw new Error('Category already exists');
   }
-  return DEFAULT_CATEGORIES;
+  
+  CATEGORIES.push(category);
+  return CATEGORIES;
 }
 
-export function saveCategories(categories: ProductCategory[]): void {
-  try {
-    localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
-  } catch (error) {
-    console.error('Error saving categories to storage:', error);
+// Remove a category (admin function)
+export function removeCategory(categoryId: string): Category[] {
+  const index = CATEGORIES.findIndex(cat => cat.id === categoryId);
+  if (index === -1) {
+    throw new Error('Category not found');
   }
+  
+  CATEGORIES.splice(index, 1);
+  return CATEGORIES;
 }
 
-export function getFeaturedCategories(): ProductCategory[] {
-  return getStoredCategories().filter(cat => cat.featured).slice(0, 3);
-}
-
-export function getAllCategoryNames(): string[] {
-  return getStoredCategories().map(cat => cat.name);
-}
-
-export function getCategoryByName(name: string): ProductCategory | undefined {
-  return getStoredCategories().find(cat => cat.name === name);
-}
-
-export function generateCategoryId(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+// Get all categories
+export function getAllCategories(): Category[] {
+  return CATEGORIES;
 }

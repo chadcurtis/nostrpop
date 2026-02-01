@@ -35,7 +35,7 @@ const Shop = () => {
   const isAdmin = useIsAdmin();
 
   // Get categories
-  const { categoryNames, featuredCategories } = useCategories();
+  const { categoryNames } = useCategories();
 
   // Get initial tab from URL params
   const initialTab = searchParams.get('tab') === 'admin' && isAdmin ? 'admin' : 'marketplace';
@@ -167,60 +167,7 @@ const Shop = () => {
                 </div>
               </div>
 
-              {/* Featured Categories */}
-              {featuredCategories.length > 0 && (
-                <Card className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-purple-200 dark:border-purple-800">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center text-purple-700 dark:text-purple-300">
-                      <div className="flex items-center space-x-2">
-                        <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                          <div className="w-5 h-5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                          </div>
-                        </div>
-                        <span>Featured Categories</span>
-                      </div>
-                    </CardTitle>
-                    <CardDescription className="text-purple-600 dark:text-purple-400">
-                      Explore our most popular product categories
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {featuredCategories.map((category) => (
-                        <Card
-                          key={category.id}
-                          className="cursor-pointer hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-purple-200 dark:border-purple-700 hover:border-purple-300 dark:hover:border-purple-600"
-                          onClick={() => setSelectedCategory(category.name)}
-                        >
-                          <CardContent className="p-4">
-                            <div className="flex items-center space-x-3">
-                              {category.icon && (
-                                <div className="text-2xl">{category.icon}</div>
-                              )}
-                              <div className="flex-1">
-                                <h3 className="font-semibold text-purple-700 dark:text-purple-300">
-                                  {category.name}
-                                </h3>
-                                {category.description && (
-                                  <p className="text-xs text-purple-600 dark:text-purple-400 line-clamp-1">
-                                    {category.description}
-                                  </p>
-                                )}
-                              </div>
-                              <div className="text-purple-500">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+
 
               {/* Filters */}
               <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">

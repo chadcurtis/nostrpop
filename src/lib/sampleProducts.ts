@@ -51,7 +51,7 @@ export const sampleProducts: MarketplaceProduct[] = [
     images: [],
     currency: 'USD',
     price: 19.99,
-    category: 'Books',
+    category: 'Digital Downloads',
     type: 'digital',
     specs: [
       ['Format', 'PDF, EPUB'],
@@ -72,7 +72,7 @@ export const sampleProducts: MarketplaceProduct[] = [
     currency: 'USD',
     price: 89.99,
     quantity: 5,
-    category: 'Accessories',
+    category: 'Keychains',
     type: 'physical',
     specs: [
       ['Material', 'Genuine Leather'],
@@ -94,7 +94,7 @@ export const sampleProducts: MarketplaceProduct[] = [
     currency: 'USD',
     price: 12.99,
     quantity: 50,
-    category: 'Accessories',
+    category: 'Keychains',
     type: 'physical',
     specs: [
       ['Quantity', '10 stickers'],
@@ -115,7 +115,7 @@ export const sampleProducts: MarketplaceProduct[] = [
     images: [],
     currency: 'USD',
     price: 149.99,
-    category: 'Software',
+    category: 'Digital Downloads',
     type: 'digital',
     specs: [
       ['Duration', '12 hours'],
@@ -158,7 +158,7 @@ export const sampleProducts: MarketplaceProduct[] = [
     currency: 'USD',
     price: 199.99,
     quantity: 3,
-    category: 'Electronics',
+    category: 'Art',
     type: 'physical',
     specs: [
       ['Connectivity', 'USB-C'],
@@ -180,7 +180,7 @@ export const sampleProducts: MarketplaceProduct[] = [
     currency: 'USD',
     price: 24.99,
     quantity: 20,
-    category: 'Food',
+    category: 'T-shirts',
     type: 'physical',
     specs: [
       ['Weight', '12 oz (340g)'],
