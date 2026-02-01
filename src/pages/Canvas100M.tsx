@@ -27,7 +27,8 @@ import {
   X,
   ZoomIn,
   ZoomOut,
-  Move
+  Move,
+  Sparkles
 } from 'lucide-react';
 import type { NostrEvent, NostrMetadata } from '@nostrify/nostrify';
 
