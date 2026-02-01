@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -61,14 +61,23 @@ type ProductFormData = z.infer<typeof productSchema>;
 interface CreateProductFormProps {
   onSuccess?: () => void;
   onCancel?: () => void;
+  initialData?: {
+    name?: string;
+    description?: string;
+    price?: number;
+    currency?: string;
+    images?: string[];
+    url?: string;
+  };
 }
 
-export function CreateProductForm({ onSuccess, onCancel }: CreateProductFormProps) {
-  const [images, setImages] = useState<string[]>([]);
+export function CreateProductForm({ onSuccess, onCancel, initialData }: CreateProductFormProps) {
+  const [images, setImages] = useState<string[]>(initialData?.images || []);
   const [digitalFiles, setDigitalFiles] = useState<Array<{ name: string; url: string }>>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isUploadingFiles, setIsUploadingFiles] = useState(false);
   const [specs, setSpecs] = useState<Array<{ key: string; value: string }>>([]);
+  const [contactUrl, setContactUrl] = useState<string>(initialData?.url || '');
 
   const { user } = useCurrentUser();
   const { mutate: createEvent, isPending: isPublishing } = useNostrPublish();
@@ -85,16 +94,36 @@ export function CreateProductForm({ onSuccess, onCancel }: CreateProductFormProp
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
+      name: initialData?.name || '',
+      description: initialData?.description || '',
+      price: initialData?.price || 0,
+      currency: initialData?.currency || 'USD',
       type: 'physical',
-      currency: 'USD',
+      category: categoryNames[0] || '',
       stallId: 'default',
       quantity: 1,
-      shippingCost: 0
+      shippingCost: 0,
+      contactUrl: initialData?.url || ''
     }
   });
 
   const productType = watch('type');
   const isPhysical = productType === 'physical';
+
+  // Update form when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      if (initialData.name) setValue('name', initialData.name);
+      if (initialData.description) setValue('description', initialData.description);
+      if (initialData.price) setValue('price', initialData.price);
+      if (initialData.currency) setValue('currency', initialData.currency);
+      if (initialData.url) {
+        setValue('contactUrl', initialData.url);
+        setContactUrl(initialData.url);
+      }
+      if (initialData.images) setImages(initialData.images);
+    }
+  }, [initialData, setValue]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
