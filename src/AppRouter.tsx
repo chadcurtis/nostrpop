@@ -14,6 +14,7 @@ import Feed from "./pages/Feed";
 import Canvas100M from "./pages/Canvas100M";
 import { CategoryDemo } from "./pages/CategoryDemo";
 import { ProductPage } from "./pages/ProductPage";
+import { DeleteProductPage } from "./pages/DeleteProductPage";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import NotFound from "./pages/NotFound";
 
@@ -38,6 +39,7 @@ export function AppRouter() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/feed" element={<Feed />} />
           <Route path="/categories" element={<CategoryDemo />} />
+          <Route path="/shop/:productId/delete" element={<DeleteProductPage />} />
           <Route path="/shop/:productId" element={<ProductPage />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

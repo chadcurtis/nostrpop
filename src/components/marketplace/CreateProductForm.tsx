@@ -571,22 +571,6 @@ export function CreateProductForm({ onSuccess, onCancel, initialData }: CreatePr
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="currency">Currency *</Label>
-                <Select onValueChange={(value) => setValue('currency', value)} defaultValue="USD">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CURRENCIES.map((currency) => (
-                      <SelectItem key={currency.value} value={currency.value}>
-                        {currency.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="quantity">Quantity Available</Label>
                 <Input
                   id="quantity"
