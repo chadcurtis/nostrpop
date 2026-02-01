@@ -13,6 +13,7 @@ const navigationItems = [
   { name: 'Home', href: '/', icon: '🏠' },
   { name: 'Cards', href: '/cards', icon: '🎨' },
   { name: 'Art', href: '/art', icon: '🖼️' },
+  { name: '100M Canvas', href: '/canvas', icon: '🎨' },
   { name: 'Feed', href: '/feed', icon: '📰' },
   { name: 'Shop', href: '/shop', icon: '🛍️' },
 ];
