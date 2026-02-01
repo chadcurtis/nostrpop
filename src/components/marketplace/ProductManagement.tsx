@@ -15,6 +15,7 @@ import { AddProductByUrl } from './AddProductByUrl';
 import { LightningAddressDebugger } from './LightningAddressDebugger';
 import { CategoryManagement } from './CategoryManagement';
 import { formatCurrency } from '@/hooks/usePayment';
+import { useToast } from '@/hooks/useToast';
 import type { MarketplaceProduct } from '@/lib/sampleProducts';
 import {
   Plus,
@@ -41,6 +42,7 @@ export function ProductManagement() {
   const [importedProductData, setImportedProductData] = useState<any>(null);
 
   const { user } = useCurrentUser();
+  const { toast } = useToast();
   const { categoryNames } = useCategories();
   const { data: products, isLoading, refetch } = useMarketplaceProducts(
     selectedCategory === 'All Categories' ? undefined : selectedCategory
@@ -372,6 +374,20 @@ export function ProductManagement() {
           <CreateProductForm
             onSuccess={handleCreateSuccess}
             onCancel={() => setActiveTab('products')}
+            initialData={importedProductData}
+          />
+        </TabsContent>
+
+        <TabsContent value="import" className="space-y-6">
+          <AddProductByUrl 
+            onProductScraped={(data) => {
+              setImportedProductData(data);
+              setActiveTab('create');
+              toast({
+                title: "Product Data Imported",
+                description: `Loaded "${data.name}". Review and publish to your shop.`,
+              });
+            }}
           />
         </TabsContent>
 
