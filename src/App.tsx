@@ -37,11 +37,8 @@ const defaultConfig: AppConfig = {
 
 const presetRelays = [
   { url: 'wss://relay.damus.io', name: 'Damus' },
+  { url: 'wss://ditto.pub/relay', name: 'Ditto' },
   { url: 'wss://relay.primal.net', name: 'Primal' },
-  { url: 'wss://nos.lol', name: 'nos.lol' },
-  { url: 'wss://relay.nostr.band', name: 'Nostr.Band' },
-  { url: 'wss://nostr.wine', name: 'Nostr Wine' },
-  { url: 'wss://purplepag.es', name: 'Purple Pages' },
 ];
 
 export function App() {
