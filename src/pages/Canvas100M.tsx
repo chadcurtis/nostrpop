@@ -59,13 +59,15 @@ function Canvas100M() {
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
+  const gridCanvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedColor, setSelectedColor] = useState('#FF00FF');
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(10); // Start more zoomed in to see pixels better
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const [pendingPixels, setPendingPixels] = useState<PendingPixel[]>([]);
   const [showPreview, setShowPreview] = useState(false);
+  const [showGrid, setShowGrid] = useState(true);
 
   // Fetch all painted pixels from Nostr
   const { data: pixels, isLoading: pixelsLoading, refetch: refetchPixels } = useQuery({
@@ -149,14 +151,52 @@ function Canvas100M() {
     // Clear overlay
     overlayCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    // Draw pending pixels with semi-transparency for live preview
+    // Draw pending pixels with bright colors for visibility
     pendingPixels.forEach(pixel => {
       overlayCtx.fillStyle = pixel.color;
-      overlayCtx.globalAlpha = 0.8;
       overlayCtx.fillRect(pixel.x, pixel.y, 1, 1);
-      overlayCtx.globalAlpha = 1.0;
+      
+      // Add a bright border for better visibility
+      overlayCtx.strokeStyle = '#FFFFFF';
+      overlayCtx.lineWidth = 0.2;
+      overlayCtx.strokeRect(pixel.x, pixel.y, 1, 1);
     });
   }, [pendingPixels]);
+
+  // Draw grid
+  useEffect(() => {
+    if (!gridCanvasRef.current || !showGrid) return;
+    
+    const gridCanvas = gridCanvasRef.current;
+    const gridCtx = gridCanvas.getContext('2d');
+    
+    if (!gridCtx) return;
+
+    // Clear grid
+    gridCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    // Only show grid when zoomed in enough to see individual pixels
+    if (zoom >= 5) {
+      gridCtx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+      gridCtx.lineWidth = 0.05;
+
+      // Draw vertical lines
+      for (let x = 0; x <= CANVAS_WIDTH; x += 10) {
+        gridCtx.beginPath();
+        gridCtx.moveTo(x, 0);
+        gridCtx.lineTo(x, CANVAS_HEIGHT);
+        gridCtx.stroke();
+      }
+
+      // Draw horizontal lines
+      for (let y = 0; y <= CANVAS_HEIGHT; y += 10) {
+        gridCtx.beginPath();
+        gridCtx.moveTo(0, y);
+        gridCtx.lineTo(CANVAS_WIDTH, y);
+        gridCtx.stroke();
+      }
+    }
+  }, [showGrid, zoom]);
 
   // Handle canvas click to paint pixel
   const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -171,11 +211,26 @@ function Canvas100M() {
 
     const canvas = e.currentTarget;
     const rect = canvas.getBoundingClientRect();
+    
+    // Calculate pixel coordinates accounting for zoom and pan
+    const viewportX = e.clientX - rect.left;
+    const viewportY = e.clientY - rect.top;
+    
+    // Convert viewport coordinates to canvas coordinates
+    const canvasX = (viewportX / zoom) - (pan.x / zoom);
+    const canvasY = (viewportY / zoom) - (pan.y / zoom);
+    
+    // Scale to actual canvas size
     const scaleX = CANVAS_WIDTH / rect.width;
     const scaleY = CANVAS_HEIGHT / rect.height;
     
-    const x = Math.floor((e.clientX - rect.left - pan.x / zoom) * scaleX * zoom);
-    const y = Math.floor((e.clientY - rect.top - pan.y / zoom) * scaleY * zoom);
+    const x = Math.floor(canvasX * scaleX);
+    const y = Math.floor(canvasY * scaleY);
+
+    // Bounds check
+    if (x < 0 || x >= CANVAS_WIDTH || y < 0 || y >= CANVAS_HEIGHT) {
+      return;
+    }
 
     // Check if pixel is already painted
     const isAlreadyPainted = pixels?.some(p => p.x === x && p.y === y) || 
@@ -202,10 +257,8 @@ function Canvas100M() {
 
     setPendingPixels(prev => [...prev, newPixel]);
     
-    toast({
-      title: "Pixel Added",
-      description: `Pixel at (${x}, ${y}) added to your canvas. Preview and pay to make it permanent!`,
-    });
+    // Show a subtle toast (less intrusive)
+    console.log(`Pixel painted at (${x}, ${y})`);
   }, [user, selectedColor, pixels, pendingPixels, pan, zoom, toast]);
 
   // Undo last pixel
@@ -410,9 +463,17 @@ function Canvas100M() {
                     <Button variant="outline" size="sm" onClick={handleZoomOut}>
                       <ZoomOut className="h-4 w-4" />
                     </Button>
-                    <span className="text-sm text-muted-foreground">{Math.round(zoom * 100)}%</span>
+                    <span className="text-sm text-muted-foreground min-w-16 text-center">{Math.round(zoom * 10)}x</span>
                     <Button variant="outline" size="sm" onClick={handleZoomIn}>
                       <ZoomIn className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant={showGrid ? "secondary" : "outline"} 
+                      size="sm" 
+                      onClick={() => setShowGrid(!showGrid)}
+                      className="ml-2"
+                    >
+                      <Grid3X3 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
@@ -421,24 +482,38 @@ function Canvas100M() {
                 {pixelsLoading ? (
                   <Skeleton className="w-full aspect-square" />
                 ) : (
-                  <div className="relative overflow-hidden border rounded-lg bg-white">
+                  <div className="relative overflow-hidden border-2 border-purple-200 dark:border-purple-800 rounded-lg bg-white">
                     <div
                       className="relative cursor-crosshair"
                       style={{
                         width: '100%',
                         aspectRatio: '1',
                         transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
-                        transformOrigin: '0 0'
+                        transformOrigin: '0 0',
+                        transition: 'none'
                       }}
                     >
+                      {/* Base canvas - permanent pixels */}
                       <canvas
                         ref={canvasRef}
                         width={CANVAS_WIDTH}
                         height={CANVAS_HEIGHT}
-                        onClick={handleCanvasClick}
-                        className="absolute top-0 left-0 w-full h-full"
+                        className="absolute top-0 left-0 w-full h-full pointer-events-none"
                         style={{ imageRendering: 'pixelated' }}
                       />
+                      
+                      {/* Grid canvas - grid overlay */}
+                      {showGrid && (
+                        <canvas
+                          ref={gridCanvasRef}
+                          width={CANVAS_WIDTH}
+                          height={CANVAS_HEIGHT}
+                          className="absolute top-0 left-0 w-full h-full pointer-events-none"
+                          style={{ imageRendering: 'crisp-edges' }}
+                        />
+                      )}
+                      
+                      {/* Overlay canvas - pending pixels */}
                       <canvas
                         ref={overlayCanvasRef}
                         width={CANVAS_WIDTH}
@@ -446,8 +521,22 @@ function Canvas100M() {
                         className="absolute top-0 left-0 w-full h-full pointer-events-none"
                         style={{ imageRendering: 'pixelated' }}
                       />
+                      
+                      {/* Click target - transparent layer on top */}
+                      <div
+                        onClick={handleCanvasClick}
+                        className="absolute top-0 left-0 w-full h-full cursor-crosshair"
+                        style={{ touchAction: 'none' }}
+                      />
                     </div>
                   </div>
+                  
+                  {/* Pixel coordinates display */}
+                  {pendingPixels.length > 0 && (
+                    <div className="mt-2 text-xs text-muted-foreground text-center">
+                      {pendingPixels.length} pixel{pendingPixels.length !== 1 ? 's' : ''} pending
+                    </div>
+                  )}
                 )}
               </CardContent>
             </Card>
