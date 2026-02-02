@@ -5,6 +5,25 @@ import { getProductsByCategory, getProductById } from '@/lib/sampleProducts';
 import { useCurrentUser } from './useCurrentUser';
 import { useToast } from './useToast';
 
+// Local storage for deleted products (prevents them from reappearing)
+const DELETED_PRODUCTS_KEY = 'nostrpop_deleted_products';
+
+function getDeletedProducts(): Set<string> {
+  try {
+    const stored = localStorage.getItem(DELETED_PRODUCTS_KEY);
+    return new Set(stored ? JSON.parse(stored) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function addDeletedProduct(productAddress: string) {
+  const deleted = getDeletedProducts();
+  deleted.add(productAddress);
+  localStorage.setItem(DELETED_PRODUCTS_KEY, JSON.stringify(Array.from(deleted)));
+  console.log(`📝 Stored deletion locally: ${productAddress}`);
+}
+
 interface MarketplaceProduct {
   id: string;
   event?: NostrEvent;
@@ -47,19 +66,32 @@ export function useMarketplaceProducts(category?: string) {
         nostr.query([
           {
             kinds: [5], // Deletion events
-            limit: 500,
+            limit: 1000,
           }
         ], { signal })
       ]);
 
-      // Build set of deleted product addresses
+      console.log(`Found ${productEvents.length} products and ${deletionEvents.length} deletion events`);
+
+      // Build set of deleted product addresses from ALL deletion events
       const deletedAddresses = new Set<string>();
+      
+      // Add deletions from Nostr events
       deletionEvents.forEach(delEvent => {
         const aTags = delEvent.tags.filter(([name]) => name === 'a');
         aTags.forEach(([, address]) => {
-          if (address) deletedAddresses.add(address);
+          if (address && address.startsWith('30018:')) {
+            deletedAddresses.add(address);
+            console.log(`Found deletion event for: ${address}`);
+          }
         });
       });
+
+      // Add locally stored deletions (prevents deleted products from reappearing)
+      const locallyDeleted = getDeletedProducts();
+      locallyDeleted.forEach(address => deletedAddresses.add(address));
+
+      console.log(`Total deleted addresses: ${deletedAddresses.size} (${locallyDeleted.size} local + ${deletedAddresses.size - locallyDeleted.size} from network)`);
 
       // Process and validate product events, filtering out deleted ones
       const products = productEvents
@@ -78,9 +110,11 @@ export function useMarketplaceProducts(category?: string) {
             // Check if this product has been deleted
             const productAddress = `30018:${event.pubkey}:${dTag}`;
             if (deletedAddresses.has(productAddress)) {
-              console.log(`Filtering out deleted product: ${productAddress}`);
+              console.log(`✗ Filtering out deleted product: ${productAddress}`);
               return null;
             }
+            
+            console.log(`✓ Keeping product: ${productAddress}`);
 
             // Determine product type
             const isDigital = categoryTags.includes('digital');
@@ -159,11 +193,21 @@ export function useMarketplaceProduct(productId: string) {
       
       // Check if this product has been deleted
       const productAddress = `30018:${event.pubkey}:${productId}`;
+      
+      // Check local deletions first
+      const locallyDeleted = getDeletedProducts();
+      if (locallyDeleted.has(productAddress)) {
+        console.log(`Product ${productAddress} is locally deleted`);
+        throw new Error('Product has been deleted');
+      }
+      
+      // Check deletion events from network
       const isDeleted = deletionEvents.some(delEvent => 
         delEvent.tags.some(([name, value]) => name === 'a' && value === productAddress)
       );
 
       if (isDeleted) {
+        console.log(`Product ${productAddress} has deletion event on network`);
         throw new Error('Product has been deleted');
       }
 
@@ -213,42 +257,60 @@ export function useDeleteProduct() {
         throw new Error('User must be logged in to delete products');
       }
 
+      const productAddress = `30018:${user.pubkey}:${productId}`;
+      console.log(`🗑️ Deleting product: ${productAddress}`);
+
       // Create a deletion event (kind 5) for the product
       const deletionEvent = {
         kind: 5,
         content: 'Product deleted',
         tags: [
-          ['e', ''], // We don't have the event ID, so we'll use the d tag approach
-          ['a', `30018:${user.pubkey}:${productId}`] // Reference to the addressable event
+          ['a', productAddress] // Reference to the addressable event
         ],
         created_at: Math.floor(Date.now() / 1000),
       };
 
       const signedEvent = await user.signer.signEvent(deletionEvent);
+      console.log('📤 Publishing deletion event:', signedEvent);
+      
       await nostr.event(signedEvent, { signal: AbortSignal.timeout(5000) });
+      
+      console.log('✓ Deletion event published to relay');
 
-      return { productId, deletionEvent: signedEvent };
+      // Store deletion locally so it persists across refreshes
+      addDeletedProduct(productAddress);
+
+      return { productId, productAddress, deletionEvent: signedEvent };
     },
     onSuccess: (data) => {
+      console.log(`✓ Deletion handler completed for: ${data.productAddress}`);
+      
       toast({
         title: "Product Deleted",
-        description: "The product has been successfully deleted from the marketplace.",
+        description: "The product has been permanently deleted.",
       });
 
-      // Remove from ALL marketplace-products queries (all categories)
+      // HARD DELETE: Remove from ALL cached queries immediately
       queryClient.setQueriesData(
         { queryKey: ['marketplace-products'] }, 
         (oldData: any) => {
           if (!oldData || !Array.isArray(oldData)) return oldData;
-          return oldData.filter((product: any) => product.id !== data.productId);
+          const filtered = oldData.filter((product: any) => {
+            const productAddress = `30018:${product.event?.pubkey}:${product.id}`;
+            return productAddress !== data.productAddress;
+          });
+          console.log(`Cache update: ${oldData.length} -> ${filtered.length} products`);
+          return filtered;
         }
       );
 
-      // Remove specific product from cache
+      // Remove specific product query
       queryClient.removeQueries({ queryKey: ['marketplace-product', data.productId] });
 
-      // Force immediate refetch of all product queries to get deletion events
-      queryClient.invalidateQueries({ queryKey: ['marketplace-products'], refetchType: 'all' });
+      // Cancel any in-flight queries
+      queryClient.cancelQueries({ queryKey: ['marketplace-products'] });
+      
+      console.log('✓ Cache cleared, product removed');
     },
     onError: (error) => {
       console.error('Failed to delete product:', error);
