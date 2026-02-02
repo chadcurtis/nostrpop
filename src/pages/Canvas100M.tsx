@@ -313,22 +313,22 @@ function Canvas100M() {
     const canvas = e.currentTarget;
     const rect = canvas.getBoundingClientRect();
     
-    // Get click position relative to the canvas element
+    // Get click position relative to the canvas container
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
     
-    // The container has width = 100% and aspect-ratio: 1
-    // The canvas inside is transformed with scale(zoom) and translate(pan.x, pan.y)
-    // To get canvas coordinates, we need to reverse the transformations:
-    // 1. Normalize to 0-1 range based on the visible rect
-    // 2. Account for zoom scale
-    // 3. Account for pan offset (which is in pixels at the current zoom level)
-    const normalizedX = clickX / rect.width;
-    const normalizedY = clickY / rect.height;
+    // The transform is: scale(zoom) translate(pan.x, pan.y) with origin at (0,0)
+    // To reverse: subtract pan (which is in zoomed pixels), then divide by zoom
+    // Then convert from container coordinates to canvas pixel coordinates
+    const containerSize = rect.width; // Square container
     
-    // Convert to canvas coordinates accounting for zoom and pan
-    const x = Math.floor((normalizedX * CANVAS_WIDTH / zoom) - pan.x);
-    const y = Math.floor((normalizedY * CANVAS_HEIGHT / zoom) - pan.y);
+    // Reverse the transformations
+    const canvasX = (clickX - pan.x * zoom) / zoom;
+    const canvasY = (clickY - pan.y * zoom) / zoom;
+    
+    // Convert from container coordinates to canvas pixel coordinates
+    const x = Math.floor((canvasX / containerSize) * CANVAS_WIDTH);
+    const y = Math.floor((canvasY / containerSize) * CANVAS_HEIGHT);
 
     // If image is loaded, check if click is on the image to start dragging
     if (uploadedImage) {
@@ -359,12 +359,15 @@ function Canvas100M() {
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
     
-    // Normalize and convert to canvas coordinates accounting for zoom and pan
-    const normalizedX = clickX / rect.width;
-    const normalizedY = clickY / rect.height;
+    const containerSize = rect.width;
     
-    const x = Math.floor((normalizedX * CANVAS_WIDTH / zoom) - pan.x);
-    const y = Math.floor((normalizedY * CANVAS_HEIGHT / zoom) - pan.y);
+    // Reverse the transformations
+    const canvasX = (clickX - pan.x * zoom) / zoom;
+    const canvasY = (clickY - pan.y * zoom) / zoom;
+    
+    // Convert to canvas pixel coordinates
+    const x = Math.floor((canvasX / containerSize) * CANVAS_WIDTH);
+    const y = Math.floor((canvasY / containerSize) * CANVAS_HEIGHT);
 
     // Update image position
     setImagePosition({
@@ -398,16 +401,19 @@ function Canvas100M() {
     const canvas = e.currentTarget;
     const rect = canvas.getBoundingClientRect();
     
-    // Get click position relative to the canvas element
+    // Get click position relative to the canvas container
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
     
-    // Normalize and convert to canvas coordinates accounting for zoom and pan
-    const normalizedX = clickX / rect.width;
-    const normalizedY = clickY / rect.height;
+    const containerSize = rect.width;
     
-    const x = Math.floor((normalizedX * CANVAS_WIDTH / zoom) - pan.x);
-    const y = Math.floor((normalizedY * CANVAS_HEIGHT / zoom) - pan.y);
+    // Reverse the transformations: subtract pan (in zoomed pixels), then divide by zoom
+    const canvasX = (clickX - pan.x * zoom) / zoom;
+    const canvasY = (clickY - pan.y * zoom) / zoom;
+    
+    // Convert to canvas pixel coordinates
+    const x = Math.floor((canvasX / containerSize) * CANVAS_WIDTH);
+    const y = Math.floor((canvasY / containerSize) * CANVAS_HEIGHT);
 
     // Bounds check
     if (x < 0 || x >= CANVAS_WIDTH || y < 0 || y >= CANVAS_HEIGHT) {
@@ -777,61 +783,6 @@ function Canvas100M() {
               </Badge>
             )}
           </div>
-
-          {/* Info Card */}
-          <Card className="max-w-4xl mx-auto bg-gradient-to-r from-orange-50 via-yellow-50 to-orange-50 dark:from-orange-900/10 dark:via-yellow-900/10 dark:to-orange-900/10 border-orange-200 dark:border-orange-800">
-            <CardContent className="pt-6">
-              <div className="space-y-4 text-left">
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-yellow-500 flex items-center justify-center">
-                      <Zap className="w-4 h-4 text-white" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-orange-700 dark:text-orange-300 mb-1">
-                      Why 100 Million Pixels?
-                    </h3>
-                    <p className="text-sm text-orange-600 dark:text-orange-400">
-                      <strong>100 million satoshis = 1 Bitcoin.</strong> This canvas is a living demonstration of Bitcoin's divisibility and the power of micropayments. Each pixel represents one satoshi, making this a 1 BTC artwork when complete! Every pixel is timestamped with the Bitcoin block height for eternal proof of creation.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                      <Sparkles className="w-4 h-4 text-white" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-purple-700 dark:text-purple-300 mb-1">
-                      The Power of Decentralization
-                    </h3>
-                    <p className="text-sm text-purple-600 dark:text-purple-400">
-                      This project showcases the power of <strong>Nostr</strong> (decentralized social protocol), <strong>Lightning Network</strong> (instant Bitcoin payments), and <strong>collaborative art</strong>—all without centralized control. Your pixels are stored on Nostr relays, owned by you forever.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center">
-                      <Palette className="w-4 h-4 text-white" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-pink-700 dark:text-pink-300 mb-1">
-                      Art Meets Technology
-                    </h3>
-                    <p className="text-sm text-pink-600 dark:text-pink-400">
-                      Every pixel you paint is a Nostr event, timestamped and cryptographically signed. No one can paint over your pixels—they're protected by the protocol. This is digital art with true ownership and permanence.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Login Prompt */}
@@ -1230,6 +1181,63 @@ function Canvas100M() {
               </CardHeader>
               <CardContent>
                 <RelaySelector className="w-full" />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* About Section */}
+        <div className="mt-16 max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
+            About the 100M Canvas
+          </h2>
+          
+          <div className="grid gap-6 md:grid-cols-3">
+            <Card className="border-orange-200 dark:border-orange-800 bg-gradient-to-br from-orange-50/50 to-yellow-50/50 dark:from-orange-900/10 dark:to-yellow-900/10">
+              <CardHeader>
+                <CardTitle className="flex items-center text-orange-700 dark:text-orange-300">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-yellow-500 flex items-center justify-center mr-3">
+                    <Zap className="w-5 h-5 text-white" />
+                  </div>
+                  Why 100 Million Pixels?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-orange-600 dark:text-orange-400 leading-relaxed">
+                  <strong>100 million satoshis = 1 Bitcoin.</strong> This canvas is a living demonstration of Bitcoin's divisibility and the power of micropayments. Each pixel represents one satoshi, making this a 1 BTC artwork when complete! Every pixel is timestamped with the Bitcoin block height for eternal proof of creation.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-900/10 dark:to-pink-900/10">
+              <CardHeader>
+                <CardTitle className="flex items-center text-purple-700 dark:text-purple-300">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mr-3">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  The Power of Decentralization
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-purple-600 dark:text-purple-400 leading-relaxed">
+                  This project showcases the power of <strong>Nostr</strong> (decentralized social protocol), <strong>Lightning Network</strong> (instant Bitcoin payments), and <strong>collaborative art</strong>—all without centralized control. Your pixels are stored on Nostr relays, owned by you forever.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-pink-200 dark:border-pink-800 bg-gradient-to-br from-pink-50/50 to-red-50/50 dark:from-pink-900/10 dark:to-red-900/10">
+              <CardHeader>
+                <CardTitle className="flex items-center text-pink-700 dark:text-pink-300">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center mr-3">
+                    <Palette className="w-5 h-5 text-white" />
+                  </div>
+                  Art Meets Technology
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-pink-600 dark:text-pink-400 leading-relaxed">
+                  Every pixel you paint is a Nostr event, timestamped and cryptographically signed. No one can paint over your pixels—they're protected by the protocol. This is digital art with true ownership and permanence.
+                </p>
               </CardContent>
             </Card>
           </div>
