@@ -317,9 +317,18 @@ function Canvas100M() {
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
     
-    // Convert to canvas pixel coordinates
-    const x = Math.floor((clickX / rect.width) * CANVAS_WIDTH);
-    const y = Math.floor((clickY / rect.height) * CANVAS_HEIGHT);
+    // The container has width = 100% and aspect-ratio: 1
+    // The canvas inside is transformed with scale(zoom) and translate(pan.x, pan.y)
+    // To get canvas coordinates, we need to reverse the transformations:
+    // 1. Normalize to 0-1 range based on the visible rect
+    // 2. Account for zoom scale
+    // 3. Account for pan offset (which is in pixels at the current zoom level)
+    const normalizedX = clickX / rect.width;
+    const normalizedY = clickY / rect.height;
+    
+    // Convert to canvas coordinates accounting for zoom and pan
+    const x = Math.floor((normalizedX * CANVAS_WIDTH / zoom) - pan.x);
+    const y = Math.floor((normalizedY * CANVAS_HEIGHT / zoom) - pan.y);
 
     // If image is loaded, check if click is on the image to start dragging
     if (uploadedImage) {
@@ -350,8 +359,12 @@ function Canvas100M() {
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
     
-    const x = Math.floor((clickX / rect.width) * CANVAS_WIDTH);
-    const y = Math.floor((clickY / rect.height) * CANVAS_HEIGHT);
+    // Normalize and convert to canvas coordinates accounting for zoom and pan
+    const normalizedX = clickX / rect.width;
+    const normalizedY = clickY / rect.height;
+    
+    const x = Math.floor((normalizedX * CANVAS_WIDTH / zoom) - pan.x);
+    const y = Math.floor((normalizedY * CANVAS_HEIGHT / zoom) - pan.y);
 
     // Update image position
     setImagePosition({
@@ -389,10 +402,12 @@ function Canvas100M() {
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
     
-    // Convert to canvas pixel coordinates
-    // The canvas is scaled to fit the container, so we need to account for that
-    const x = Math.floor((clickX / rect.width) * CANVAS_WIDTH);
-    const y = Math.floor((clickY / rect.height) * CANVAS_HEIGHT);
+    // Normalize and convert to canvas coordinates accounting for zoom and pan
+    const normalizedX = clickX / rect.width;
+    const normalizedY = clickY / rect.height;
+    
+    const x = Math.floor((normalizedX * CANVAS_WIDTH / zoom) - pan.x);
+    const y = Math.floor((normalizedY * CANVAS_HEIGHT / zoom) - pan.y);
 
     // Bounds check
     if (x < 0 || x >= CANVAS_WIDTH || y < 0 || y >= CANVAS_HEIGHT) {
@@ -929,25 +944,6 @@ function Canvas100M() {
                         />
                       </div>
                     </div>
-                    
-                    {/* Live Preview - Composite canvas */}
-                    {pendingPixels.length > 0 && (
-                      <div className="mt-4">
-                        <h4 className="text-sm font-semibold mb-2">Live Preview:</h4>
-                        <div className="border-2 border-green-500 rounded-lg overflow-hidden bg-white">
-                          <canvas
-                            ref={viewCanvasRef}
-                            width={CANVAS_WIDTH}
-                            height={CANVAS_HEIGHT}
-                            className="w-full h-full"
-                            style={{ imageRendering: 'pixelated', maxHeight: '300px' }}
-                          />
-                        </div>
-                        <div className="mt-2 text-xs text-center text-green-600 dark:text-green-400 font-medium">
-                          ✓ {pendingPixels.length} pixel{pendingPixels.length !== 1 ? 's' : ''} ready to publish
-                        </div>
-                      </div>
-                    )}
                   </>
                 )}
               </CardContent>
