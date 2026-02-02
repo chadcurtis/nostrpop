@@ -328,14 +328,8 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20">
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center mb-6">
-            <Sparkles className="h-12 w-12 text-purple-600 mr-4" />
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              BitPopArt
-            </h1>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+        <div className="text-center mb-16 pt-8">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild className="rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
               <Link to="/canvas">
                 <Sparkles className="mr-2 h-5 w-5" />
