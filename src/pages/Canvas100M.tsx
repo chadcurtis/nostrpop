@@ -197,11 +197,6 @@ function Canvas100M() {
       if (pixel.x >= viewX && pixel.x < viewX + viewSize && pixel.y >= viewY && pixel.y < viewY + viewSize) {
         ctx.fillStyle = pixel.color;
         ctx.fillRect(localX, localY, scale, scale);
-        
-        // Highlight with border
-        ctx.strokeStyle = '#FFFF00';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(localX, localY, scale, scale);
       }
     });
 
@@ -225,11 +220,6 @@ function Canvas100M() {
         ctx.globalAlpha = 0.7;
         ctx.drawImage(uploadedImage, imgX, imgY, imgW, imgH);
         ctx.globalAlpha = 1.0;
-        
-        // Border
-        ctx.strokeStyle = '#8B5CF6';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(imgX, imgY, imgW, imgH);
       }
     }
   }, [pixels, pendingPixels, viewX, viewY, viewSize, uploadedImage, imageScale, imagePosition]);
