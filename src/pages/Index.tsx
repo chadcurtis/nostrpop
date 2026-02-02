@@ -335,19 +335,14 @@ const Index = () => {
               BitPopArt
             </h1>
           </div>
-          <p className="text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-            <Link to="/canvas" className="hover:text-purple-600 transition-colors underline decoration-purple-400 decoration-2 underline-offset-4">
-              100M Canvas
-            </Link>
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <Button size="lg" asChild className="rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
               <Link to="/canvas">
                 <Sparkles className="mr-2 h-5 w-5" />
                 Start Painting
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
+            <Button size="lg" variant="outline" asChild className="rounded-full">
               <Link to="/shop">
                 <Gift className="mr-2 h-5 w-5" />
                 Visit Shop

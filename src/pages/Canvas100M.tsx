@@ -683,12 +683,6 @@ function Canvas100M() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Grid3X3 className="h-12 w-12 text-purple-600 mr-4" />
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
-              100M Canvas
-            </h1>
-          </div>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-4">
             A collaborative art project on Nostr. Paint pixel by pixel on a 100 million pixel canvas!
           </p>

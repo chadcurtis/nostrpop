@@ -13,7 +13,7 @@ const navigationItems = [
   { name: 'Home', href: '/', icon: '🏠' },
   { name: 'Cards', href: '/cards', icon: '🎨' },
   { name: 'Art', href: '/art', icon: '🖼️' },
-  { name: '100M Canvas', href: '/canvas', icon: '🎨' },
+  { name: 'Canvas', href: '/canvas', icon: '🎨' },
   { name: 'Feed', href: '/feed', icon: '📰' },
   { name: 'Shop', href: '/shop', icon: '🛍️' },
 ];
@@ -43,10 +43,16 @@ export function Navigation() {
           {/* Logo/Brand */}
           <Link
             to="/"
-            className="flex items-center space-x-2 font-bold text-xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
           >
-            <Sparkles className="h-6 w-6 text-purple-600" />
-            <span>BitPopArt</span>
+            <img 
+              src="/bitpopart-logo.svg" 
+              alt="BitPopArt" 
+              className="h-10 w-10"
+            />
+            <span className="font-bold text-xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              BitPopArt
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -56,7 +62,7 @@ export function Navigation() {
                 key={item.name}
                 to={item.href}
                 className={cn(
-                  "flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                  "flex items-center space-x-1 px-4 py-2 rounded-full text-sm font-medium transition-colors",
                   isActive(item.href)
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-accent"
@@ -71,7 +77,7 @@ export function Navigation() {
                 <Link
                   to="/admin"
                   className={cn(
-                    "flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                    "flex items-center space-x-1 px-4 py-2 rounded-full text-sm font-medium transition-colors",
                     isActive('/admin')
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:text-foreground hover:bg-accent"
@@ -83,7 +89,7 @@ export function Navigation() {
                 <Link
                   to="/categories"
                   className={cn(
-                    "flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                    "flex items-center space-x-1 px-4 py-2 rounded-full text-sm font-medium transition-colors",
                     isActive('/categories')
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:text-foreground hover:bg-accent"
@@ -161,7 +167,7 @@ export function Navigation() {
                         to={item.href}
                         onClick={() => setIsOpen(false)}
                         className={cn(
-                          "flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors",
+                          "flex items-center space-x-3 px-4 py-3 rounded-full text-base font-medium transition-colors",
                           isActive(item.href)
                             ? "bg-primary/10 text-primary"
                             : "text-muted-foreground hover:text-foreground hover:bg-accent"
@@ -177,7 +183,7 @@ export function Navigation() {
                           to="/admin"
                           onClick={() => setIsOpen(false)}
                           className={cn(
-                            "flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors",
+                            "flex items-center space-x-3 px-4 py-3 rounded-full text-base font-medium transition-colors",
                             isActive('/admin')
                               ? "bg-primary/10 text-primary"
                               : "text-muted-foreground hover:text-foreground hover:bg-accent"
@@ -190,7 +196,7 @@ export function Navigation() {
                           to="/categories"
                           onClick={() => setIsOpen(false)}
                           className={cn(
-                            "flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors",
+                            "flex items-center space-x-3 px-4 py-3 rounded-full text-base font-medium transition-colors",
                             isActive('/categories')
                               ? "bg-primary/10 text-primary"
                               : "text-muted-foreground hover:text-foreground hover:bg-accent"
