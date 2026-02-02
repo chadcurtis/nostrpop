@@ -8,6 +8,7 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useTheme } from '@/hooks/useTheme';
 import { Menu, Moon, Sun, Sparkles, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import BitPopArtLogo from '@/assets/bitpopart-logo.svg';
 
 const navigationItems = [
   { name: 'Home', href: '/', icon: '🏠' },
@@ -46,7 +47,7 @@ export function Navigation() {
             className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
           >
             <img 
-              src="/bitpopart-logo.svg" 
+              src={BitPopArtLogo} 
               alt="BitPopArt" 
               className="h-10 w-10"
             />
