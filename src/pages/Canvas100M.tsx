@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useNostr } from '@nostrify/react';
 import { useQuery } from '@tanstack/react-query';
@@ -12,6 +13,7 @@ import { useAuthor } from '@/hooks/useAuthor';
 import { genUserName } from '@/lib/genUserName';
 import { useToast } from '@/hooks/useToast';
 import { RelaySelector } from '@/components/RelaySelector';
+import { useLightningPayment } from '@/hooks/usePayment';
 import {
   Paintbrush,
   Zap,
@@ -56,12 +58,14 @@ function Canvas100M() {
   const { user } = useCurrentUser();
   const { nostr } = useNostr();
   const { toast } = useToast();
+  const { createInvoice, invoice, isLoading: paymentLoading, clearInvoice } = useLightningPayment();
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedColor, setSelectedColor] = useState('#FF00FF');
   const [pendingPixels, setPendingPixels] = useState<PendingPixel[]>([]);
   const [showPreview, setShowPreview] = useState(false);
   const [currentBlockHeight, setCurrentBlockHeight] = useState<number | null>(null);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   
   // Display settings
   const DISPLAY_SIZE = 500; // Canvas element size in pixels
@@ -449,6 +453,32 @@ function Canvas100M() {
   const handlePublish = async () => {
     if (!user || pendingPixels.length === 0) return;
 
+    const totalSats = pendingPixels.length * SAT_PER_PIXEL;
+
+    try {
+      // Create Lightning invoice for payment
+      await createInvoice({
+        amount: totalSats,
+        currency: 'SAT',
+        description: `${pendingPixels.length} pixel${pendingPixels.length > 1 ? 's' : ''} on 100M Canvas`,
+        productId: 'canvas-pixels'
+      });
+
+      setShowPaymentDialog(true);
+    } catch (error) {
+      console.error('Failed to create invoice:', error);
+      toast({
+        title: "Payment Error",
+        description: "Failed to create Lightning invoice. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Actually publish pixels after payment
+  const publishPixelsToNostr = async () => {
+    if (!user || pendingPixels.length === 0) return;
+
     try {
       // Create events for each pixel
       const events = pendingPixels.map(pixel => ({
@@ -477,16 +507,16 @@ function Canvas100M() {
         await nostr.event(signedEvent, { signal: AbortSignal.timeout(5000) });
       }
 
-      const totalSats = pendingPixels.length * SAT_PER_PIXEL;
-
       toast({
-        title: "Pixels Published!",
-        description: `${pendingPixels.length} pixels published for ${totalSats} sats! (Payment integration coming soon)`,
+        title: "Pixels Published! ⚡",
+        description: `${pendingPixels.length} pixels published successfully!`,
       });
 
       // Clear pending pixels and refetch
       setPendingPixels([]);
       setShowPreview(false);
+      setShowPaymentDialog(false);
+      clearInvoice();
       refetchPixels();
     } catch (error) {
       console.error('Failed to publish pixels:', error);
@@ -1033,6 +1063,89 @@ function Canvas100M() {
           </p>
         </div>
       </div>
+
+      {/* Payment Dialog */}
+      <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <Zap className="w-5 h-5 mr-2 text-yellow-500" />
+              Pay with Lightning
+            </DialogTitle>
+            <DialogDescription>
+              Scan this invoice with your Lightning wallet to publish your pixels
+            </DialogDescription>
+          </DialogHeader>
+          
+          {invoice ? (
+            <div className="space-y-4">
+              <div className="p-4 bg-white rounded-lg border-2 border-gray-200">
+                <div className="text-center mb-4">
+                  <div className="text-3xl font-bold text-orange-600">
+                    {invoice.amount_sats.toLocaleString()} sats
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {pendingPixels.length} pixel{pendingPixels.length > 1 ? 's' : ''} × {SAT_PER_PIXEL} sat
+                  </div>
+                </div>
+
+                {/* QR Code placeholder - in production, use a QR code library */}
+                <div className="bg-gray-100 aspect-square rounded-lg flex items-center justify-center mb-4">
+                  <div className="text-center p-4">
+                    <p className="text-xs text-muted-foreground mb-2">Lightning Invoice</p>
+                    <div className="max-w-full break-all text-xs font-mono bg-white p-2 rounded border">
+                      {invoice.payment_request.substring(0, 50)}...
+                    </div>
+                  </div>
+                </div>
+
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    navigator.clipboard.writeText(invoice.payment_request);
+                    toast({
+                      title: "Invoice Copied!",
+                      description: "Paste it into your Lightning wallet to pay.",
+                    });
+                  }}
+                >
+                  Copy Invoice
+                </Button>
+              </div>
+
+              <div className="flex space-x-2">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => {
+                    setShowPaymentDialog(false);
+                    clearInvoice();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="flex-1 bg-green-600 hover:bg-green-700"
+                  onClick={publishPixelsToNostr}
+                >
+                  <Check className="h-4 w-4 mr-2" />
+                  I've Paid
+                </Button>
+              </div>
+
+              <p className="text-xs text-center text-muted-foreground">
+                Click "I've Paid" after sending the payment
+              </p>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+              <p className="text-sm text-muted-foreground">Creating invoice...</p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
