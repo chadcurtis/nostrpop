@@ -1,144 +1,171 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin } from 'lucide-react';
 import { POPUP_TYPE_CONFIG, type PopUpEventData } from '@/lib/popupTypes';
 import { format } from 'date-fns';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 interface WorldMapProps {
   events: PopUpEventData[];
 }
 
+// Fix default marker icon issue with Leaflet
+const fixLeafletIcons = () => {
+  // @ts-ignore
+  delete L.Icon.Default.prototype._getIconUrl;
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  });
+};
+
 export function WorldMap({ events }: WorldMapProps) {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
   const [hoveredEvent, setHoveredEvent] = useState<PopUpEventData | null>(null);
 
-  // Convert lat/lon to percentage position on the map
-  // Using Equirectangular projection
-  const latLonToPosition = (lat: number, lon: number) => {
-    const x = ((lon + 180) / 360) * 100;
-    const y = ((90 - lat) / 180) * 100;
-    
-    return { x: `${x}%`, y: `${y}%` };
-  };
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    // Fix icon paths
+    fixLeafletIcons();
+
+    // Initialize map
+    const map = L.map(mapRef.current, {
+      center: [20, 0],
+      zoom: 2,
+      minZoom: 2,
+      maxZoom: 18,
+      worldCopyJump: true,
+      zoomControl: true,
+    });
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+    }).addTo(map);
+
+    mapInstanceRef.current = map;
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
+
+  // Update markers when events change
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+
+    // Clear existing markers
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
+
+    // Add new markers
+    events.forEach((event) => {
+      const markerColor = event.type === 'art' 
+        ? '#a855f7' 
+        : event.type === 'shop' 
+        ? '#ec4899' 
+        : '#6366f1';
+
+      // Create custom icon
+      const customIcon = L.divIcon({
+        className: 'custom-marker',
+        html: `
+          <div style="
+            width: 24px;
+            height: 24px;
+            background-color: ${markerColor};
+            border: 4px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            position: relative;
+          ">
+            <div style="
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              width: 8px;
+              height: 8px;
+              background-color: white;
+              border-radius: 50%;
+            "></div>
+          </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+      });
+
+      const marker = L.marker([event.latitude, event.longitude], {
+        icon: customIcon,
+        title: event.title,
+      });
+
+      // Create popup
+      const typeConfig = POPUP_TYPE_CONFIG[event.type];
+      const popupContent = `
+        <div style="min-width: 200px; font-family: system-ui;">
+          <div style="margin-bottom: 8px;">
+            <span style="
+              display: inline-block;
+              padding: 4px 8px;
+              border-radius: 6px;
+              background-color: ${event.type === 'art' ? '#f3e8ff' : event.type === 'shop' ? '#fce7f3' : '#e0e7ff'};
+              color: ${event.type === 'art' ? '#7e22ce' : event.type === 'shop' ? '#be185d' : '#4338ca'};
+              font-size: 12px;
+              font-weight: 600;
+            ">
+              ${typeConfig.icon} ${typeConfig.label}
+            </span>
+          </div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">${event.title}</h3>
+          <p style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">
+            📍 ${event.location}
+          </p>
+          <p style="font-size: 12px; color: #9ca3af;">
+            ${format(new Date(event.startDate), 'MMM d, yyyy')}${event.endDate ? ` - ${format(new Date(event.endDate), 'MMM d, yyyy')}` : ''}
+          </p>
+          ${event.description ? `<p style="font-size: 13px; margin-top: 8px; color: #374151;">${event.description}</p>` : ''}
+          ${event.link ? `<a href="${event.link}" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-top: 8px; color: #7c3aed; font-size: 13px; font-weight: 600; text-decoration: none;">Learn more →</a>` : ''}
+        </div>
+      `;
+
+      marker.bindPopup(popupContent, {
+        maxWidth: 300,
+        className: 'custom-popup',
+      });
+
+      marker.addTo(mapInstanceRef.current!);
+      markersRef.current.push(marker);
+    });
+
+    // Fit bounds to show all markers
+    if (events.length > 0 && mapInstanceRef.current) {
+      const bounds = events.map(e => [e.latitude, e.longitude] as [number, number]);
+      if (bounds.length === 1) {
+        mapInstanceRef.current.setView(bounds[0], 10);
+      } else {
+        mapInstanceRef.current.fitBounds(bounds, { padding: [50, 50] });
+      }
+    }
+  }, [events]);
 
   return (
-    <div className="relative w-full h-full bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950 overflow-hidden">
-      {/* World map background */}
-      <div className="absolute inset-0">
-        <img 
-          src="/world-map.svg" 
-          alt="World Map" 
-          className="w-full h-full object-contain"
-          style={{ opacity: 0.9 }}
-        />
-      </div>
-
-      {/* Equator and Prime Meridian overlays */}
-      <div className="absolute inset-0">
-        <div 
-          className="absolute w-full border-t-2 border-indigo-300 dark:border-indigo-700 border-dashed opacity-40"
-          style={{ top: '50%' }}
-        >
-          <span className="absolute left-4 -top-3 text-indigo-600 dark:text-indigo-400 text-sm font-medium bg-white/80 dark:bg-gray-800/80 px-2 py-1 rounded">
-            Equator
-          </span>
-        </div>
-        <div 
-          className="absolute h-full border-l-2 border-indigo-300 dark:border-indigo-700 border-dashed opacity-40"
-          style={{ left: '50%' }}
-        >
-          <span className="absolute top-4 -left-12 text-indigo-600 dark:text-indigo-400 text-sm font-medium bg-white/80 dark:bg-gray-800/80 px-2 py-1 rounded">
-            Prime Meridian
-          </span>
-        </div>
-      </div>
-
-      {/* Event markers */}
-      <div className="absolute inset-0">
-        {events.map((event) => {
-          const { x, y } = latLonToPosition(event.latitude, event.longitude);
-          
-          const markerColor = event.type === 'art' 
-            ? '#a855f7' 
-            : event.type === 'shop' 
-            ? '#ec4899' 
-            : '#6366f1';
-
-          const isHovered = hoveredEvent?.id === event.id;
-
-          return (
-            <div
-              key={event.id}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-200 z-20"
-              style={{ left: x, top: y }}
-              onMouseEnter={() => setHoveredEvent(event)}
-              onMouseLeave={() => setHoveredEvent(null)}
-            >
-              {/* Pulse animation */}
-              {isHovered && (
-                <div
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full animate-ping"
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    backgroundColor: markerColor,
-                    opacity: 0.4,
-                  }}
-                />
-              )}
-
-              {/* Main marker */}
-              <div
-                className={`rounded-full border-4 border-white transition-all duration-200 ${
-                  isHovered ? 'scale-125' : 'scale-100'
-                }`}
-                style={{
-                  width: isHovered ? '28px' : '20px',
-                  height: isHovered ? '28px' : '20px',
-                  backgroundColor: markerColor,
-                  boxShadow: isHovered 
-                    ? '0 4px 12px rgba(0,0,0,0.4)' 
-                    : '0 2px 6px rgba(0,0,0,0.3)',
-                }}
-              >
-                {/* Inner white dot */}
-                <div
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
-                  style={{
-                    width: isHovered ? '10px' : '6px',
-                    height: isHovered ? '10px' : '6px',
-                  }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Hover tooltip */}
-      {hoveredEvent && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none animate-in fade-in slide-in-from-bottom-2 duration-200">
-          <Card className="p-4 shadow-2xl max-w-sm border-2">
-            <div className="space-y-2">
-              <Badge className={`${POPUP_TYPE_CONFIG[hoveredEvent.type].bgColor} ${POPUP_TYPE_CONFIG[hoveredEvent.type].color} border`}>
-                {POPUP_TYPE_CONFIG[hoveredEvent.type].icon} {POPUP_TYPE_CONFIG[hoveredEvent.type].label}
-              </Badge>
-              <h3 className="font-bold text-lg">{hoveredEvent.title}</h3>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4" />
-                <span>{hoveredEvent.location}</span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {format(new Date(hoveredEvent.startDate), 'MMM d, yyyy')}
-                {hoveredEvent.endDate && ` - ${format(new Date(hoveredEvent.endDate), 'MMM d, yyyy')}`}
-              </p>
-            </div>
-          </Card>
-        </div>
-      )}
+    <div className="relative w-full h-full">
+      {/* Leaflet map container */}
+      <div ref={mapRef} className="w-full h-full rounded-lg overflow-hidden" />
 
       {/* Legend */}
-      <div className="absolute top-4 left-4 bg-white/95 dark:bg-gray-800/95 rounded-xl shadow-xl p-4 space-y-3 backdrop-blur-sm border border-gray-200 dark:border-gray-700 z-20">
+      <div className="absolute top-4 left-4 bg-white/95 dark:bg-gray-800/95 rounded-xl shadow-xl p-4 space-y-3 backdrop-blur-sm border border-gray-200 dark:border-gray-700 z-[1000]">
         <h3 className="font-bold text-base mb-2 flex items-center gap-2">
           <MapPin className="h-5 w-5" />
           Event Types
@@ -157,12 +184,28 @@ export function WorldMap({ events }: WorldMapProps) {
       </div>
 
       {/* Event counter */}
-      <div className="absolute bottom-4 right-4 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-xl border border-gray-200 dark:border-gray-700 z-20">
+      <div className="absolute bottom-4 right-4 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-xl border border-gray-200 dark:border-gray-700 z-[1000]">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse flex-shrink-0" />
           <span className="text-sm font-semibold whitespace-nowrap">{events.length} event{events.length !== 1 ? 's' : ''} worldwide</span>
         </div>
       </div>
+
+      <style>{`
+        .custom-marker {
+          background: transparent !important;
+          border: none !important;
+        }
+        
+        .leaflet-popup-content-wrapper {
+          border-radius: 12px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .leaflet-popup-tip {
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+      `}</style>
     </div>
   );
 }
