@@ -12,6 +12,7 @@ import BitPopArtLogo from '@/assets/bitpopart-logo.svg';
 
 const navigationItems = [
   { name: 'Home', href: '/', icon: '🏠' },
+  { name: 'Blog', href: '/blog', icon: '📝' },
   { name: 'Cards', href: '/cards', icon: '🎨' },
   { name: 'Art', href: '/art', icon: '🖼️' },
   { name: 'Canvas', href: '/canvas', icon: '🎨' },

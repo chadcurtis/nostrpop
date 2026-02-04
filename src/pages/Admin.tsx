@@ -11,6 +11,7 @@ import { LoginArea } from '@/components/auth/LoginArea';
 import { CardManagement } from '@/components/cards/CardManagement';
 import { ProductManagement } from '@/components/marketplace/ProductManagement';
 import { CategoryManagement } from '@/components/marketplace/CategoryManagement';
+import { BlogPostManagement } from '@/components/blog/BlogPostManagement';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import {
   Plus,
@@ -29,7 +30,8 @@ import {
   ShoppingBag,
   Tags,
   CreditCard,
-  Grid3X3
+  Grid3X3,
+  FileText
 } from 'lucide-react';
 
 const Admin = () => {
@@ -226,8 +228,12 @@ const Admin = () => {
 
         {/* Admin Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 max-w-4xl mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-6 max-w-5xl mx-auto mb-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="blog">
+              <FileText className="h-4 w-4 mr-2" />
+              Blog
+            </TabsTrigger>
             <TabsTrigger value="cards">
               <CreditCard className="h-4 w-4 mr-2" />
               Cards
@@ -360,6 +366,23 @@ const Admin = () => {
                 </div>
               </div>
             </div>
+          </TabsContent>
+
+          <TabsContent value="blog">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="h-6 w-6 mr-2" />
+                  Blog Management
+                </CardTitle>
+                <CardDescription>
+                  Import WordPress articles and manage your blog posts on Nostr
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <BlogPostManagement />
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="cards">

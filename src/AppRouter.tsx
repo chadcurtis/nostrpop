@@ -13,6 +13,8 @@ import Shop from "./pages/Shop";
 import Admin from "./pages/Admin";
 import Feed from "./pages/Feed";
 import Canvas100M from "./pages/Canvas100M";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import { CategoryDemo } from "./pages/CategoryDemo";
 import { ProductPage } from "./pages/ProductPage";
 import { DeleteProductPage } from "./pages/DeleteProductPage";
@@ -40,6 +42,8 @@ export function AppRouter() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/feed" element={<Feed />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:articleId" element={<BlogPost />} />
           <Route path="/categories" element={<CategoryDemo />} />
           <Route path="/shop/:productId/delete" element={<DeleteProductPage />} />
           <Route path="/shop/:productId" element={<ProductPage />} />
