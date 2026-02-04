@@ -35,6 +35,9 @@ export interface ArtworkData {
   tags?: string[];
   edition?: string;
   certificate_url?: string;
+  
+  // Gallery display
+  featured?: boolean; // Shows in tile gallery
 }
 
 export interface ArtworkBid {

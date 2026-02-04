@@ -74,6 +74,8 @@ const artworkSchema = z.object({
   // Share to Nostr fields
   shareToNostr: z.boolean().optional(),
   shareMessage: z.string().optional(),
+  // Gallery display
+  featured: z.boolean().optional(),
 });
 
 type ArtworkFormData = z.infer<typeof artworkSchema>;
@@ -359,6 +361,7 @@ export function CreateArtworkForm({ onSuccess, onCancel }: CreateArtworkFormProp
         tags: tags.length > 0 ? tags : undefined,
         edition: data.edition,
         certificateUrl: data.certificateUrl,
+        featured: data.featured,
         shipping: (data.localCountries || data.localShippingCost || data.internationalShippingCost) ? {
           localCountries: data.localCountries,
           localShippingCost: data.localShippingCost,
@@ -804,6 +807,27 @@ export function CreateArtworkForm({ onSuccess, onCancel }: CreateArtworkFormProp
           )}
 
           <Separator />
+
+          {/* Featured in Tile Gallery */}
+          <div className="space-y-2 p-4 border rounded-lg bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="featured"
+                onCheckedChange={(checked) => setValue('featured', !!checked)}
+              />
+              <input
+                type="hidden"
+                {...register('featured')}
+              />
+              <Label htmlFor="featured" className="text-base font-medium flex items-center gap-2">
+                <Eye className="h-4 w-4" />
+                Feature in Tile Gallery
+              </Label>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Display this artwork in the featured tile gallery at the top of the Art page for maximum visibility.
+            </p>
+          </div>
 
           {/* Share to Nostr Option */}
           <div className="space-y-4 p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">

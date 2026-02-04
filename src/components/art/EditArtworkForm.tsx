@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useUploadFile } from '@/hooks/useUploadFile';
 import { useToast } from '@/hooks/useToast';
@@ -72,6 +73,8 @@ const artworkSchema = z.object({
   localCountries: z.string().optional(),
   localShippingCost: z.number().min(0, 'Local shipping cost must be 0 or greater').optional(),
   internationalShippingCost: z.number().min(0, 'International shipping cost must be 0 or greater').optional(),
+  // Gallery display
+  featured: z.boolean().optional(),
 });
 
 type ArtworkFormData = z.infer<typeof artworkSchema>;
@@ -116,6 +119,7 @@ export function EditArtworkForm({ artwork, onSuccess, onCancel }: EditArtworkFor
       localCountries: artwork.shipping?.local_countries,
       localShippingCost: artwork.shipping?.local_cost,
       internationalShippingCost: artwork.shipping?.international_cost,
+      featured: artwork.featured || false,
     }
   });
 
@@ -140,6 +144,7 @@ export function EditArtworkForm({ artwork, onSuccess, onCancel }: EditArtworkFor
     setValue('localCountries', artwork.shipping?.local_countries || '');
     setValue('localShippingCost', artwork.shipping?.local_cost);
     setValue('internationalShippingCost', artwork.shipping?.international_cost);
+    setValue('featured', artwork.featured || false);
   }, [artwork, setValue]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -267,6 +272,7 @@ export function EditArtworkForm({ artwork, onSuccess, onCancel }: EditArtworkFor
         ['t', 'artwork'],
         ['t', 'art'],
         ...(data.saleType !== 'not_for_sale' ? [['sale', data.saleType]] : []),
+        ...(data.featured ? [['featured', 'true']] : []),
         ...(tags.map(tag => ['t', tag.toLowerCase()]))
       ];
 
@@ -722,6 +728,30 @@ export function EditArtworkForm({ artwork, onSuccess, onCancel }: EditArtworkFor
               </div>
             </div>
           )}
+
+          <Separator />
+
+          {/* Featured in Tile Gallery */}
+          <div className="space-y-2 p-4 border rounded-lg bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="featured"
+                checked={watch('featured')}
+                onCheckedChange={(checked) => setValue('featured', !!checked)}
+              />
+              <input
+                type="hidden"
+                {...register('featured')}
+              />
+              <Label htmlFor="featured" className="text-base font-medium flex items-center gap-2">
+                <Eye className="h-4 w-4" />
+                Feature in Tile Gallery
+              </Label>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Display this artwork in the featured tile gallery at the top of the Art page for maximum visibility.
+            </p>
+          </div>
 
           {/* Actions */}
           <div className="flex justify-end space-x-4 pt-6">

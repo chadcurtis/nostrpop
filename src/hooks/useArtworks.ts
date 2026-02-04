@@ -31,6 +31,7 @@ export function useArtworks(filter: ArtworkFilter = 'all') {
             const dTag = event.tags.find(([name]) => name === 'd')?.[1];
             const titleTag = event.tags.find(([name]) => name === 'title')?.[1];
             const saleTags = event.tags.filter(([name]) => name === 'sale').map(([, value]) => value);
+            const featured = event.tags.find(([name]) => name === 'featured')?.[1] === 'true';
 
             // Basic validation
             if (!dTag || !titleTag || !content.title || !content.images?.length) {
@@ -88,7 +89,8 @@ export function useArtworks(filter: ArtworkFilter = 'all') {
               year: content.year,
               tags: content.tags || [],
               edition: content.edition,
-              certificate_url: content.certificate_url
+              certificate_url: content.certificate_url,
+              featured
             } as ArtworkData;
           } catch (error) {
             console.warn('Failed to parse artwork event:', error);
@@ -240,6 +242,7 @@ export function useCreateArtwork() {
       tags?: string[];
       edition?: string;
       certificateUrl?: string;
+      featured?: boolean;
       shipping?: {
         localCountries?: string;
         localShippingCost?: number;
@@ -286,6 +289,7 @@ export function useCreateArtwork() {
         ['t', 'artwork'],
         ['t', 'art'],
         ...(artworkData.saleType !== 'not_for_sale' ? [['sale', artworkData.saleType]] : []),
+        ...(artworkData.featured ? [['featured', 'true']] : []),
         ...(artworkData.tags?.map(tag => ['t', tag.toLowerCase()]) || [])
       ];
 

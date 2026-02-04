@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { LoginArea } from '@/components/auth/LoginArea';
 import { RelaySelector } from '@/components/RelaySelector';
 import { ArtworkThumbnail } from '@/components/art/ArtworkThumbnail';
+import { TileGallery } from '@/components/art/TileGallery';
 import { CreateArtworkForm } from '@/components/art/CreateArtworkForm';
 import { EditArtworkForm } from '@/components/art/EditArtworkForm';
 import { PaymentDialog } from '@/components/marketplace/PaymentDialog';
@@ -75,6 +76,9 @@ const Art = () => {
 
   // Fetch artworks
   const { data: artworks, isLoading: artworksLoading, error: artworksError } = useArtworks(selectedFilter);
+  
+  // Get featured artworks for tile gallery
+  const featuredArtworks = artworks?.filter(artwork => artwork.featured) || [];
 
   useSeoMeta({
     title: 'Art Gallery - BitPop Cards',
@@ -210,6 +214,16 @@ const Art = () => {
 
           <TabsContent value="gallery">
             <div className="space-y-6">
+              {/* Featured Tile Gallery */}
+              {featuredArtworks.length > 0 && !artworksLoading && (
+                <TileGallery
+                  artworks={featuredArtworks}
+                  onViewDetails={handleViewDetails}
+                  onBuy={handleBuy}
+                  onBid={handleBid}
+                />
+              )}
+
               {/* Login Prompt for Non-Logged-In Users */}
               {!user && (
                 <Card className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-purple-200 dark:border-purple-800">
@@ -234,7 +248,7 @@ const Art = () => {
                 <div>
                   <h2 className="text-2xl font-bold">Art Gallery</h2>
                   <p className="text-muted-foreground">
-                    Explore digital artworks from talented artists
+                    Explore artworks from BitPopArt
                     {!user && " • Login required for purchases"}
                   </p>
                 </div>
