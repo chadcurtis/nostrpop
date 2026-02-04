@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin } from 'lucide-react';
-import { POPUP_TYPE_CONFIG, type PopUpEventData } from '@/lib/popupTypes';
+import { POPUP_TYPE_CONFIG, POPUP_STATUS_CONFIG, type PopUpEventData } from '@/lib/popupTypes';
 import { format } from 'date-fns';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -113,6 +113,7 @@ export function WorldMap({ events }: WorldMapProps) {
 
       // Create popup
       const typeConfig = POPUP_TYPE_CONFIG[event.type];
+      const statusConfig = event.status ? POPUP_STATUS_CONFIG[event.status] : null;
       const popupContent = `
         <div style="min-width: 250px; max-width: 300px; font-family: system-ui;">
           ${event.image ? `
@@ -125,7 +126,7 @@ export function WorldMap({ events }: WorldMapProps) {
             </div>
           ` : ''}
           <div style="padding: ${event.image ? '0 12px 12px 12px' : '12px'};">
-            <div style="margin-bottom: 8px;">
+            <div style="margin-bottom: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
               <span style="
                 display: inline-block;
                 padding: 4px 10px;
@@ -137,6 +138,19 @@ export function WorldMap({ events }: WorldMapProps) {
               ">
                 ${typeConfig.icon} ${typeConfig.label}
               </span>
+              ${event.status === 'option' ? `
+                <span style="
+                  display: inline-block;
+                  padding: 4px 10px;
+                  border-radius: 8px;
+                  background-color: #fef3c7;
+                  color: #92400e;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+                  Option
+                </span>
+              ` : ''}
             </div>
             <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 10px; line-height: 1.3;">${event.title}</h3>
             <div style="margin-bottom: 6px;">

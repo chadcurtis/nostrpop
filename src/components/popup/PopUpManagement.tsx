@@ -26,12 +26,13 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import type { NostrEvent } from '@nostrify/nostrify';
-import { POPUP_TYPE_CONFIG, coordinatesToGeohash, generateUUID, type PopUpType } from '@/lib/popupTypes';
+import { POPUP_TYPE_CONFIG, POPUP_STATUS_CONFIG, coordinatesToGeohash, generateUUID, type PopUpType, type PopUpStatus } from '@/lib/popupTypes';
 
 interface PopUpFormData {
   title: string;
   description: string;
   type: PopUpType;
+  status: PopUpStatus;
   location: string;
   latitude: string;
   longitude: string;
@@ -56,6 +57,7 @@ export function PopUpManagement() {
     title: '',
     description: '',
     type: 'art',
+    status: 'confirmed',
     location: '',
     latitude: '',
     longitude: '',
@@ -164,6 +166,7 @@ export function PopUpManagement() {
       ['g', geohash],
       ['t', 'bitpopart-popup'],
       ['t', formData.type],
+      ['status', formData.status],
     ];
 
     if (formData.endDate) {
@@ -197,6 +200,7 @@ export function PopUpManagement() {
             title: '',
             description: '',
             type: 'art',
+            status: 'confirmed',
             location: '',
             latitude: '',
             longitude: '',
@@ -223,6 +227,7 @@ export function PopUpManagement() {
     const image = event.tags.find(t => t[0] === 'image')?.[1] || '';
     const link = event.tags.find(t => t[0] === 'r')?.[1] || '';
     const type = event.tags.find(t => t[0] === 't' && ['art', 'shop', 'event'].includes(t[1]))?.[1] as PopUpType || 'art';
+    const status = event.tags.find(t => t[0] === 'status')?.[1] as PopUpStatus || 'confirmed';
 
     let description = '';
     let lat = '';
@@ -241,6 +246,7 @@ export function PopUpManagement() {
       title,
       description,
       type,
+      status,
       location,
       latitude: lat,
       longitude: lon,
@@ -281,6 +287,7 @@ export function PopUpManagement() {
       title: '',
       description: '',
       type: 'art',
+      status: 'confirmed',
       location: '',
       latitude: '',
       longitude: '',
@@ -312,18 +319,18 @@ export function PopUpManagement() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="title">Event Title *</Label>
-                  <Input
-                    id="title"
-                    placeholder="BitPopArt Exhibition Amsterdam"
-                    value={formData.title}
-                    onChange={(e) => handleInputChange('title', e.target.value)}
-                    required
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="title">Event Title *</Label>
+                <Input
+                  id="title"
+                  placeholder="BitPopArt Exhibition Amsterdam"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  required
+                />
+              </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="type">Event Type *</Label>
                   <Select
@@ -337,6 +344,25 @@ export function PopUpManagement() {
                       {Object.entries(POPUP_TYPE_CONFIG).map(([key, config]) => (
                         <SelectItem key={key} value={key}>
                           {config.icon} {config.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="status">Event Status *</Label>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(value) => handleInputChange('status', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(POPUP_STATUS_CONFIG).map(([key, config]) => (
+                        <SelectItem key={key} value={key}>
+                          {config.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -549,7 +575,9 @@ export function PopUpManagement() {
                 const endDate = event.tags.find(t => t[0] === 'end')?.[1];
                 const image = event.tags.find(t => t[0] === 'image')?.[1];
                 const type = event.tags.find(t => t[0] === 't' && ['art', 'shop', 'event'].includes(t[1]))?.[1] as PopUpType || 'art';
+                const status = event.tags.find(t => t[0] === 'status')?.[1] as PopUpStatus || 'confirmed';
                 const typeConfig = POPUP_TYPE_CONFIG[type];
+                const statusConfig = POPUP_STATUS_CONFIG[status];
 
                 return (
                   <Card key={event.id} className="overflow-hidden">
@@ -566,11 +594,16 @@ export function PopUpManagement() {
                       <div className="flex-1 p-4">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
                               <h3 className="font-semibold text-lg">{title}</h3>
                               <Badge className={`${typeConfig.bgColor} ${typeConfig.color} border`}>
                                 {typeConfig.icon} {typeConfig.label}
                               </Badge>
+                              {status === 'option' && (
+                                <Badge className={`${statusConfig.bgColor} ${statusConfig.color} border`}>
+                                  {statusConfig.label}
+                                </Badge>
+                              )}
                             </div>
                             <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                               <span className="flex items-center gap-1">

@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { MapPin, Calendar, ExternalLink, Globe } from 'lucide-react';
 import { format } from 'date-fns';
 import type { NostrEvent } from '@nostrify/nostrify';
-import { POPUP_TYPE_CONFIG, type PopUpType, type PopUpEventData } from '@/lib/popupTypes';
+import { POPUP_TYPE_CONFIG, POPUP_STATUS_CONFIG, type PopUpType, type PopUpStatus, type PopUpEventData } from '@/lib/popupTypes';
 import { WorldMap } from '@/components/popup/WorldMap';
 
 export default function PopUp() {
@@ -44,6 +44,7 @@ export default function PopUp() {
           const image = event.tags.find(t => t[0] === 'image')?.[1];
           const link = event.tags.find(t => t[0] === 'r')?.[1];
           const type = event.tags.find(t => t[0] === 't' && ['art', 'shop', 'event'].includes(t[1]))?.[1] as PopUpType || 'art';
+          const status = event.tags.find(t => t[0] === 'status')?.[1] as PopUpStatus || 'confirmed';
 
           let description = '';
           let latitude = 0;
@@ -65,6 +66,7 @@ export default function PopUp() {
             title,
             description,
             type,
+            status,
             location,
             latitude,
             longitude,
@@ -154,6 +156,7 @@ export default function PopUp() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {popupEvents.map((event) => {
                 const typeConfig = POPUP_TYPE_CONFIG[event.type];
+                const statusConfig = POPUP_STATUS_CONFIG[event.status];
 
                 return (
                   <Card key={event.id} className="h-full hover:shadow-xl transition-all duration-300 overflow-hidden group bg-white dark:bg-gray-800">
@@ -165,18 +168,32 @@ export default function PopUp() {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                        <Badge className={`absolute top-3 right-3 ${typeConfig.bgColor} ${typeConfig.color} border shadow-lg`}>
-                          {typeConfig.icon} {typeConfig.label}
-                        </Badge>
+                        <div className="absolute top-3 right-3 flex gap-2">
+                          <Badge className={`${typeConfig.bgColor} ${typeConfig.color} border shadow-lg`}>
+                            {typeConfig.icon} {typeConfig.label}
+                          </Badge>
+                          {event.status === 'option' && (
+                            <Badge className={`${statusConfig.bgColor} ${statusConfig.color} border shadow-lg`}>
+                              {statusConfig.label}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     ) : (
                       <div className="relative h-56 bg-gradient-to-br from-purple-100 via-pink-100 to-indigo-100 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-indigo-900/20 flex items-center justify-center">
                         <div className="text-center">
                           <span className="text-6xl opacity-40">{typeConfig.icon}</span>
                         </div>
-                        <Badge className={`absolute top-3 right-3 ${typeConfig.bgColor} ${typeConfig.color} border`}>
-                          {typeConfig.label}
-                        </Badge>
+                        <div className="absolute top-3 right-3 flex gap-2">
+                          <Badge className={`${typeConfig.bgColor} ${typeConfig.color} border`}>
+                            {typeConfig.label}
+                          </Badge>
+                          {event.status === 'option' && (
+                            <Badge className={`${statusConfig.bgColor} ${statusConfig.color} border`}>
+                              {statusConfig.label}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     )}
                     <CardHeader className="space-y-3">

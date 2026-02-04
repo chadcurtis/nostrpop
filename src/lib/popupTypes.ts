@@ -4,11 +4,14 @@
 
 export type PopUpType = 'art' | 'shop' | 'event';
 
+export type PopUpStatus = 'confirmed' | 'option';
+
 export interface PopUpEventData {
   id: string;
   title: string;
   description: string;
   type: PopUpType;
+  status: PopUpStatus;
   location: string;
   latitude: number;
   longitude: number;
@@ -41,6 +44,23 @@ export const POPUP_TYPE_CONFIG: Record<PopUpType, {
     color: 'text-indigo-700 dark:text-indigo-300',
     bgColor: 'bg-indigo-100 dark:bg-indigo-900/30 border-indigo-300 dark:border-indigo-700',
     icon: '📅',
+  },
+};
+
+export const POPUP_STATUS_CONFIG: Record<PopUpStatus, {
+  label: string;
+  color: string;
+  bgColor: string;
+}> = {
+  confirmed: {
+    label: 'Confirmed',
+    color: 'text-green-700 dark:text-green-300',
+    bgColor: 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700',
+  },
+  option: {
+    label: 'Option',
+    color: 'text-amber-700 dark:text-amber-300',
+    bgColor: 'bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700',
   },
 };
 
