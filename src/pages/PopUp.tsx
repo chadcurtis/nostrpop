@@ -9,6 +9,7 @@ import { MapPin, Calendar, ExternalLink, Globe } from 'lucide-react';
 import { format } from 'date-fns';
 import type { NostrEvent } from '@nostrify/nostrify';
 import { POPUP_TYPE_CONFIG, type PopUpType, type PopUpEventData } from '@/lib/popupTypes';
+import { WorldMap } from '@/components/popup/WorldMap';
 
 export default function PopUp() {
   const { nostr } = useNostr();
@@ -80,24 +81,6 @@ export default function PopUp() {
     },
   });
 
-  // Generate OpenStreetMap URL with markers
-  const generateMapUrl = () => {
-    if (popupEvents.length === 0) return '';
-    
-    // Center on first event or calculate center of all events
-    const centerLat = popupEvents.reduce((sum, e) => sum + e.latitude, 0) / popupEvents.length;
-    const centerLon = popupEvents.reduce((sum, e) => sum + e.longitude, 0) / popupEvents.length;
-    
-    // Build markers parameter for OpenStreetMap
-    const markers = popupEvents.map((e, i) => 
-      `pin-s-${i + 1}+${e.type === 'art' ? 'a855f7' : e.type === 'shop' ? 'ec4899' : '6366f1'}(${e.longitude},${e.latitude})`
-    ).join(',');
-    
-    // Use Mapbox Static Images API (requires API key) or OpenStreetMap embed
-    // For now, we'll use an iframe embed of OpenStreetMap
-    return `https://www.openstreetmap.org/export/embed.html?bbox=${centerLon-20},${centerLat-10},${centerLon+20},${centerLat+10}&layer=mapnik`;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20">
       <div className="container mx-auto px-4 py-12">
@@ -133,28 +116,8 @@ export default function PopUp() {
                 </div>
               </div>
             ) : (
-              <div className="h-[500px] w-full relative">
-                <iframe
-                  width="100%"
-                  height="500"
-                  frameBorder="0"
-                  scrolling="no"
-                  marginHeight={0}
-                  marginWidth={0}
-                  src={generateMapUrl()}
-                  className="w-full h-full"
-                  title="PopUp Events Map"
-                />
-                {/* Map Legend */}
-                <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 space-y-2">
-                  <h3 className="font-semibold text-sm mb-2">Event Types</h3>
-                  {Object.entries(POPUP_TYPE_CONFIG).map(([key, config]) => (
-                    <div key={key} className="flex items-center gap-2 text-xs">
-                      <div className={`w-3 h-3 rounded-full ${config.bgColor}`} />
-                      <span>{config.icon} {config.label}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="h-[500px] w-full">
+                <WorldMap events={popupEvents} />
               </div>
             )}
           </CardContent>
