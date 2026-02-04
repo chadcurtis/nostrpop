@@ -12,6 +12,7 @@ import { CardManagement } from '@/components/cards/CardManagement';
 import { ProductManagement } from '@/components/marketplace/ProductManagement';
 import { CategoryManagement } from '@/components/marketplace/CategoryManagement';
 import { BlogPostManagement } from '@/components/blog/BlogPostManagement';
+import { PopUpManagement } from '@/components/popup/PopUpManagement';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import {
   Plus,
@@ -31,7 +32,8 @@ import {
   Tags,
   CreditCard,
   Grid3X3,
-  FileText
+  FileText,
+  MapPin
 } from 'lucide-react';
 
 const Admin = () => {
@@ -228,11 +230,15 @@ const Admin = () => {
 
         {/* Admin Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-6 max-w-5xl mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-7 max-w-6xl mx-auto mb-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="blog">
               <FileText className="h-4 w-4 mr-2" />
               Blog
+            </TabsTrigger>
+            <TabsTrigger value="popup">
+              <MapPin className="h-4 w-4 mr-2" />
+              PopUp
             </TabsTrigger>
             <TabsTrigger value="cards">
               <CreditCard className="h-4 w-4 mr-2" />
@@ -381,6 +387,23 @@ const Admin = () => {
               </CardHeader>
               <CardContent>
                 <BlogPostManagement />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="popup">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <MapPin className="h-6 w-6 mr-2" />
+                  PopUp Events Management
+                </CardTitle>
+                <CardDescription>
+                  Create and manage your worldwide PopUp events schedule
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PopUpManagement />
               </CardContent>
             </Card>
           </TabsContent>

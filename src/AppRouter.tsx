@@ -15,6 +15,7 @@ import Feed from "./pages/Feed";
 import Canvas100M from "./pages/Canvas100M";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import PopUp from "./pages/PopUp";
 import { CategoryDemo } from "./pages/CategoryDemo";
 import { ProductPage } from "./pages/ProductPage";
 import { DeleteProductPage } from "./pages/DeleteProductPage";
@@ -44,6 +45,7 @@ export function AppRouter() {
           <Route path="/feed" element={<Feed />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:articleId" element={<BlogPost />} />
+          <Route path="/popup" element={<PopUp />} />
           <Route path="/categories" element={<CategoryDemo />} />
           <Route path="/shop/:productId/delete" element={<DeleteProductPage />} />
           <Route path="/shop/:productId" element={<ProductPage />} />
