@@ -8,13 +8,12 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="POP Cards by BitPopArt - Good Vibes Cards">
     <meta property="og:description" content="Good Vibes cards by BitPopArt to share with everyone! Create beautiful digital cards for any occasion.">
-    <meta property="og:image" content="/icon.svg">
+    <meta property="og:image" content="./icon.svg">
     <meta name="theme-color" content="#ec4899">
-    <link rel="icon" type="image/svg+xml" href="/bitpopart-logo.svg">
-    <!-- CSP: Allow unsafe-eval for Vite HMR and development tools -->
-    <!-- Note: unsafe-eval is needed for Vite's development server and HMR functionality -->
-    <meta http-equiv="content-security-policy" content="default-src 'none'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'self'; manifest-src 'self'; connect-src 'self' blob: https: wss:; img-src 'self' data: blob: https:; media-src 'self' https:; object-src 'none'; worker-src 'self' blob:; frame-ancestors 'none'">
-    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="./bitpopart-logo.svg">
+    <!-- CSP: Production mode - secure policy without unsafe-eval -->
+    <meta http-equiv="content-security-policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'self'; manifest-src 'self'; connect-src 'self' blob: https: wss:; img-src 'self' data: blob: https:; media-src 'self' https:; object-src 'none'; worker-src 'self' blob:">
+    <link rel="manifest" href="./manifest.webmanifest">
   </head>
   <body>
     <div id="root"></div>
