@@ -156,41 +156,46 @@ export default function PopUp() {
                 const typeConfig = POPUP_TYPE_CONFIG[event.type];
 
                 return (
-                  <Card key={event.id} className="h-full hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                    {event.image && (
-                      <div className="relative h-48 overflow-hidden">
+                  <Card key={event.id} className="h-full hover:shadow-xl transition-all duration-300 overflow-hidden group bg-white dark:bg-gray-800">
+                    {event.image ? (
+                      <div className="relative h-56 overflow-hidden">
                         <img
                           src={event.image}
                           alt={event.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <Badge className={`absolute top-3 right-3 ${typeConfig.bgColor} ${typeConfig.color} border`}>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                        <Badge className={`absolute top-3 right-3 ${typeConfig.bgColor} ${typeConfig.color} border shadow-lg`}>
                           {typeConfig.icon} {typeConfig.label}
+                        </Badge>
+                      </div>
+                    ) : (
+                      <div className="relative h-56 bg-gradient-to-br from-purple-100 via-pink-100 to-indigo-100 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-indigo-900/20 flex items-center justify-center">
+                        <div className="text-center">
+                          <span className="text-6xl opacity-40">{typeConfig.icon}</span>
+                        </div>
+                        <Badge className={`absolute top-3 right-3 ${typeConfig.bgColor} ${typeConfig.color} border`}>
+                          {typeConfig.label}
                         </Badge>
                       </div>
                     )}
                     <CardHeader className="space-y-3">
-                      {!event.image && (
-                        <Badge className={`${typeConfig.bgColor} ${typeConfig.color} border w-fit`}>
-                          {typeConfig.icon} {typeConfig.label}
-                        </Badge>
-                      )}
                       <h3 className="text-2xl font-bold group-hover:text-purple-600 transition-colors line-clamp-2">
                         {event.title}
                       </h3>
                       {event.description && (
-                        <p className="text-muted-foreground line-clamp-3">
+                        <p className="text-muted-foreground line-clamp-3 text-sm">
                           {event.description}
                         </p>
                       )}
                       <div className="space-y-2 text-sm text-muted-foreground">
                         <div className="flex items-center gap-2">
                           <MapPin className="h-4 w-4 flex-shrink-0" />
-                          <span className="line-clamp-1">{event.location}</span>
+                          <span className="line-clamp-1 font-medium">{event.location}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4 flex-shrink-0" />
-                          <span>
+                          <span className="font-medium">
                             {format(new Date(event.startDate), 'MMM d, yyyy')}
                             {event.endDate && ` - ${format(new Date(event.endDate), 'MMM d, yyyy')}`}
                           </span>
@@ -201,9 +206,9 @@ export default function PopUp() {
                           href={event.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center text-purple-600 hover:text-purple-700 transition-colors pt-2"
+                          className="flex items-center text-purple-600 hover:text-purple-700 transition-colors pt-2 font-medium"
                         >
-                          <span className="text-sm font-medium">Learn more</span>
+                          <span className="text-sm">Learn more</span>
                           <ExternalLink className="h-4 w-4 ml-2" />
                         </a>
                       )}

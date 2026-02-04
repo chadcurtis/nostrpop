@@ -34,7 +34,7 @@ export function WorldMap({ events }: WorldMapProps) {
     // Fix icon paths
     fixLeafletIcons();
 
-    // Initialize map
+    // Initialize map - matching treasures.to style
     const map = L.map(mapRef.current, {
       center: [20, 0],
       zoom: 2,
@@ -42,9 +42,10 @@ export function WorldMap({ events }: WorldMapProps) {
       maxZoom: 18,
       worldCopyJump: true,
       zoomControl: true,
+      attributionControl: true,
     });
 
-    // Add OpenStreetMap tiles
+    // Add OpenStreetMap tiles - same as treasures.to
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
@@ -113,29 +114,44 @@ export function WorldMap({ events }: WorldMapProps) {
       // Create popup
       const typeConfig = POPUP_TYPE_CONFIG[event.type];
       const popupContent = `
-        <div style="min-width: 200px; font-family: system-ui;">
-          <div style="margin-bottom: 8px;">
-            <span style="
-              display: inline-block;
-              padding: 4px 8px;
-              border-radius: 6px;
-              background-color: ${event.type === 'art' ? '#f3e8ff' : event.type === 'shop' ? '#fce7f3' : '#e0e7ff'};
-              color: ${event.type === 'art' ? '#7e22ce' : event.type === 'shop' ? '#be185d' : '#4338ca'};
-              font-size: 12px;
-              font-weight: 600;
-            ">
-              ${typeConfig.icon} ${typeConfig.label}
-            </span>
+        <div style="min-width: 250px; max-width: 300px; font-family: system-ui;">
+          ${event.image ? `
+            <div style="margin: -12px -12px 12px -12px; overflow: hidden; border-radius: 12px 12px 0 0;">
+              <img 
+                src="${event.image}" 
+                alt="${event.title}"
+                style="width: 100%; height: 150px; object-fit: cover;"
+              />
+            </div>
+          ` : ''}
+          <div style="padding: ${event.image ? '0 12px 12px 12px' : '12px'};">
+            <div style="margin-bottom: 8px;">
+              <span style="
+                display: inline-block;
+                padding: 4px 10px;
+                border-radius: 8px;
+                background-color: ${event.type === 'art' ? '#f3e8ff' : event.type === 'shop' ? '#fce7f3' : '#e0e7ff'};
+                color: ${event.type === 'art' ? '#7e22ce' : event.type === 'shop' ? '#be185d' : '#4338ca'};
+                font-size: 12px;
+                font-weight: 700;
+              ">
+                ${typeConfig.icon} ${typeConfig.label}
+              </span>
+            </div>
+            <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 10px; line-height: 1.3;">${event.title}</h3>
+            <div style="margin-bottom: 6px;">
+              <p style="font-size: 13px; color: #6b7280; display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 14px;">📍</span>
+                <strong>${event.location}</strong>
+              </p>
+            </div>
+            <p style="font-size: 12px; color: #9ca3af; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 14px;">📅</span>
+              ${format(new Date(event.startDate), 'MMM d, yyyy')}${event.endDate ? ` - ${format(new Date(event.endDate), 'MMM d, yyyy')}` : ''}
+            </p>
+            ${event.description ? `<p style="font-size: 13px; margin-top: 10px; color: #374151; line-height: 1.5;">${event.description}</p>` : ''}
+            ${event.link ? `<a href="${event.link}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: #7c3aed; font-size: 13px; font-weight: 600; text-decoration: none; padding: 6px 12px; background: #f3e8ff; border-radius: 6px;">Learn more <span style="font-size: 16px;">→</span></a>` : ''}
           </div>
-          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">${event.title}</h3>
-          <p style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">
-            📍 ${event.location}
-          </p>
-          <p style="font-size: 12px; color: #9ca3af;">
-            ${format(new Date(event.startDate), 'MMM d, yyyy')}${event.endDate ? ` - ${format(new Date(event.endDate), 'MMM d, yyyy')}` : ''}
-          </p>
-          ${event.description ? `<p style="font-size: 13px; margin-top: 8px; color: #374151;">${event.description}</p>` : ''}
-          ${event.link ? `<a href="${event.link}" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-top: 8px; color: #7c3aed; font-size: 13px; font-weight: 600; text-decoration: none;">Learn more →</a>` : ''}
         </div>
       `;
 
@@ -197,13 +213,44 @@ export function WorldMap({ events }: WorldMapProps) {
           border: none !important;
         }
         
+        .leaflet-container {
+          background: #dbeafe;
+          font-family: system-ui, -apple-system, sans-serif;
+        }
+        
         .leaflet-popup-content-wrapper {
           border-radius: 12px;
           box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+          padding: 0;
+        }
+        
+        .leaflet-popup-content {
+          margin: 0;
+          min-width: 200px;
         }
         
         .leaflet-popup-tip {
           box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .leaflet-control-zoom {
+          border: 2px solid rgba(0,0,0,0.1) !important;
+          border-radius: 8px !important;
+        }
+        
+        .leaflet-control-zoom a {
+          width: 36px !important;
+          height: 36px !important;
+          line-height: 36px !important;
+          font-size: 20px !important;
+          border-radius: 6px !important;
+        }
+        
+        .leaflet-control-attribution {
+          background: rgba(255, 255, 255, 0.9) !important;
+          border-radius: 8px !important;
+          padding: 4px 8px !important;
+          font-size: 11px !important;
         }
       `}</style>
     </div>

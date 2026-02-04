@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNostr } from '@nostrify/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useNostrPublish } from '@/hooks/useNostrPublish';
+import { useUploadFile } from '@/hooks/useUploadFile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +20,9 @@ import {
   Loader2,
   Trash2,
   Edit,
-  X
+  X,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import { format } from 'date-fns';
 import type { NostrEvent } from '@nostrify/nostrify';
@@ -42,10 +45,13 @@ export function PopUpManagement() {
   const { nostr } = useNostr();
   const { user } = useCurrentUser();
   const { mutate: createEvent } = useNostrPublish();
+  const { mutateAsync: uploadFile } = useUploadFile();
   const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isCreating, setIsCreating] = useState(false);
   const [editingEvent, setEditingEvent] = useState<NostrEvent | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState<PopUpFormData>({
     title: '',
     description: '',
@@ -80,6 +86,38 @@ export function PopUpManagement() {
 
   const handleInputChange = (field: keyof PopUpFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (10MB limit)
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error('File is larger than 10MB. Please choose a smaller file.');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const tags = await uploadFile(file);
+      const imageUrl = tags[0][1]; // Get URL from first tag
+      setFormData(prev => ({ ...prev, image: imageUrl }));
+      toast.success('Image uploaded successfully!');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData(prev => ({ ...prev, image: '' }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -380,14 +418,71 @@ export function PopUpManagement() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image">Event Image URL (optional)</Label>
-                <Input
-                  id="image"
-                  type="url"
-                  placeholder="https://example.com/image.jpg"
-                  value={formData.image}
-                  onChange={(e) => handleInputChange('image', e.target.value)}
-                />
+                <Label htmlFor="image">Event Image</Label>
+                
+                {formData.image ? (
+                  <div className="space-y-2">
+                    <div className="relative rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
+                      <img
+                        src={formData.image}
+                        alt="Event preview"
+                        className="w-full h-48 object-cover"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={handleRemoveImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <Input
+                      type="url"
+                      placeholder="Or paste image URL"
+                      value={formData.image}
+                      onChange={(e) => handleInputChange('image', e.target.value)}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <input
+                      ref={fileInputRef}
+                      id="image-upload"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                      disabled={isUploading}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading}
+                    >
+                      {isUploading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-4 w-4 mr-2" />
+                          Upload Image
+                        </>
+                      )}
+                    </Button>
+                    <Input
+                      type="url"
+                      placeholder="Or paste image URL"
+                      value={formData.image}
+                      onChange={(e) => handleInputChange('image', e.target.value)}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">
