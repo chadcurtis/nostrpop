@@ -32,7 +32,7 @@ const cspPlugin = () => ({
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
-  base: "/", // Using custom domain nostrpop.art
+  base: "/nostrpop/",
   server: {
     host: "::",
     port: 8080,
