@@ -7,7 +7,7 @@ import { defineConfig } from "vitest/config";
 const cspPlugin = () => ({
   name: 'csp-plugin',
   transformIndexHtml: {
-    order: 'pre' as const,
+    order: 'post' as const, // Changed to 'post' to run after Vite's transformations
     handler(html: string, context: { server?: unknown }) {
       const isDev = context.server; // Development mode has server context
 
@@ -32,7 +32,7 @@ const cspPlugin = () => ({
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
-  base: "/nostrpop/",
+  base: "/", // Using custom domain nostrpop.art
   server: {
     host: "::",
     port: 8080,
