@@ -1,8 +1,8 @@
-# BitPop Cards Marketplace NIP
+# BitPopArt Platform NIP
 
 ## Summary
 
-This document describes the custom Nostr marketplace implementation for BitPop Cards, built on top of existing Nostr standards (NIP-15 and NIP-99) with additional features for physical and digital product management.
+This document describes the custom Nostr event kinds used by the BitPopArt platform, including marketplace functionality, project management, and artist page content.
 
 ## Motivation
 
@@ -201,9 +201,87 @@ This implementation is compatible with:
 5. Sets pricing and license terms
 6. Submits form to publish to Nostr network
 
+## Project Portfolio (Kind 36171)
+
+Custom projects are managed using **kind 36171** (addressable event) for flexible portfolio management.
+
+### Event Structure
+
+```json
+{
+  "kind": 36171,
+  "content": {
+    "name": "<project name>",
+    "description": "<project description>",
+    "thumbnail": "<thumbnail_url>",
+    "url": "<project_url>"
+  },
+  "tags": [
+    ["d", "<project_id>"],
+    ["name", "<project_name>"],
+    ["t", "bitpopart-project"],
+    ["image", "<thumbnail_url>"],
+    ["r", "<project_url>"],
+    ["order", "<display_order>"],
+    ["alt", "Project: <project_name>"]
+  ]
+}
+```
+
+### Fields
+
+- **d tag**: Unique project identifier (UUID)
+- **name tag**: Project name for quick access
+- **image tag**: Thumbnail/preview image URL
+- **r tag**: Project URL (internal path or external URL)
+- **order tag**: Display order (lower numbers appear first)
+- **t tag**: Always includes `bitpopart-project` for filtering
+
+### Content Object
+
+- **name**: Full project name
+- **description**: Detailed project description
+- **thumbnail**: Preview image URL
+- **url**: Link to project (optional)
+
+### Usage
+
+Projects are displayed on the `/projects` page and can be managed through the admin panel. Built-in projects (21K Art, 100M Canvas, POP Cards) are hardcoded, while custom projects are fetched from Nostr.
+
+## Artist Page Content (Kind 30023)
+
+The artist biography page uses **kind 30023** (NIP-23 long-form content) with a specific identifier.
+
+### Event Structure
+
+```json
+{
+  "kind": 30023,
+  "content": "<markdown content>",
+  "tags": [
+    ["d", "artist-page"],
+    ["title", "My Story"],
+    ["t", "artist"],
+    ["published_at", "<unix_timestamp>"],
+    ["alt", "Artist page: My Story"]
+  ]
+}
+```
+
+### Fields
+
+- **d tag**: Always `"artist-page"` for the main artist bio
+- **title tag**: Page title (e.g., "My Story", "About the Artist")
+- **content**: Markdown-formatted biography and artist statement
+
+### Usage
+
+The artist page content is editable through the admin panel and supports full Markdown formatting. If no event is found, a default "My Story" content is displayed.
+
 ## References
 
 - [NIP-15: Nostr Marketplace](https://github.com/nostr-protocol/nips/blob/master/15.md)
+- [NIP-23: Long-form Content](https://github.com/nostr-protocol/nips/blob/master/23.md)
 - [NIP-94: File Metadata](https://github.com/nostr-protocol/nips/blob/master/94.md)
 - [NIP-99: Classified Listings](https://github.com/nostr-protocol/nips/blob/master/99.md)
 - [NIP-B7: Blossom](https://github.com/hzrd149/blossom)

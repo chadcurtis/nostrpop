@@ -15,8 +15,8 @@ export default function Blog() {
   const { user } = useCurrentUser();
 
   useSeoMeta({
-    title: 'Blog - BitPopArt',
-    description: 'Read articles and insights from BitPopArt on Bitcoin, art, and creativity',
+    title: 'News - BitPopArt',
+    description: 'Read latest news and insights from BitPopArt on Bitcoin, art, and creativity',
   });
 
   // Fetch all blog posts (kind 30023)
@@ -66,10 +66,10 @@ export default function Blog() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
-            Blog
+            News
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Explore articles on Bitcoin, art, and creativity
+            Latest news on Bitcoin, art, and creativity
           </p>
         </div>
 

@@ -13,6 +13,8 @@ import { ProductManagement } from '@/components/marketplace/ProductManagement';
 import { CategoryManagement } from '@/components/marketplace/CategoryManagement';
 import { BlogPostManagement } from '@/components/blog/BlogPostManagement';
 import { PopUpManagement } from '@/components/popup/PopUpManagement';
+import { ArtistContentManagement } from '@/components/artist/ArtistContentManagement';
+import { ProjectManagement } from '@/components/projects/ProjectManagement';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import {
   Plus,
@@ -33,7 +35,9 @@ import {
   CreditCard,
   Grid3X3,
   FileText,
-  MapPin
+  MapPin,
+  User,
+  FolderKanban
 } from 'lucide-react';
 
 const Admin = () => {
@@ -230,15 +234,23 @@ const Admin = () => {
 
         {/* Admin Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-7 max-w-6xl mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-9 max-w-7xl mx-auto mb-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="blog">
               <FileText className="h-4 w-4 mr-2" />
-              Blog
+              News
+            </TabsTrigger>
+            <TabsTrigger value="artist">
+              <User className="h-4 w-4 mr-2" />
+              Artist
             </TabsTrigger>
             <TabsTrigger value="popup">
               <MapPin className="h-4 w-4 mr-2" />
               PopUp
+            </TabsTrigger>
+            <TabsTrigger value="projects">
+              <FolderKanban className="h-4 w-4 mr-2" />
+              Projects
             </TabsTrigger>
             <TabsTrigger value="cards">
               <CreditCard className="h-4 w-4 mr-2" />
@@ -379,14 +391,35 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <FileText className="h-6 w-6 mr-2" />
-                  Blog Management
+                  News Management
                 </CardTitle>
                 <CardDescription>
-                  Import WordPress articles and manage your blog posts on Nostr
+                  Import WordPress articles and manage your news posts on Nostr
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <BlogPostManagement />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="artist">
+            <ArtistContentManagement />
+          </TabsContent>
+
+          <TabsContent value="projects">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FolderKanban className="h-6 w-6 mr-2" />
+                  Projects Management
+                </CardTitle>
+                <CardDescription>
+                  Create and manage your project portfolio
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ProjectManagement />
               </CardContent>
             </Card>
           </TabsContent>

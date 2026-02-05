@@ -11,13 +11,11 @@ import { cn } from '@/lib/utils';
 import BitPopArtLogo from '@/assets/bitpopart-logo.svg';
 
 const navigationItems = [
-  { name: 'Home', href: '/', icon: '🏠' },
-  { name: 'Blog', href: '/blog', icon: '📝' },
+  { name: 'News', href: '/blog', icon: '📰' },
+  { name: 'Artist', href: '/artist', icon: '👨‍🎨' },
   { name: 'PopUp', href: '/popup', icon: '🗺️' },
-  { name: 'Cards', href: '/cards', icon: '🎨' },
   { name: 'Art', href: '/art', icon: '🖼️' },
-  { name: 'Canvas', href: '/canvas', icon: '🎨' },
-  { name: '21K Art', href: '/21k-art', icon: '⚡' },
+  { name: 'Projects', href: '/projects', icon: '🎨' },
   { name: 'Shop', href: '/shop', icon: '🛍️' },
 ];
 

@@ -16,6 +16,8 @@ import Canvas100M from "./pages/Canvas100M";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import PopUp from "./pages/PopUp";
+import Artist from "./pages/Artist";
+import Projects from "./pages/Projects";
 import { CategoryDemo } from "./pages/CategoryDemo";
 import { ProductPage } from "./pages/ProductPage";
 import { DeleteProductPage } from "./pages/DeleteProductPage";
@@ -23,11 +25,8 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 import NotFound from "./pages/NotFound";
 
 export function AppRouter() {
-  // Use basename for production (GitHub Pages), but not for local development/preview
-  const basename = import.meta.env.MODE === 'production' ? '/nostrpop' : undefined;
-  
   return (
-    <BrowserRouter basename={basename}>
+    <BrowserRouter>
       <ScrollToTop />
       <Layout>
         <Routes>
@@ -46,6 +45,8 @@ export function AppRouter() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:articleId" element={<BlogPost />} />
           <Route path="/popup" element={<PopUp />} />
+          <Route path="/artist" element={<Artist />} />
+          <Route path="/projects" element={<Projects />} />
           <Route path="/categories" element={<CategoryDemo />} />
           <Route path="/shop/:productId/delete" element={<DeleteProductPage />} />
           <Route path="/shop/:productId" element={<ProductPage />} />
