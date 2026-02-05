@@ -72,6 +72,7 @@ export default function Projects() {
             const thumbnail = event.tags.find(t => t[0] === 'image')?.[1] || content.thumbnail;
             const url = event.tags.find(t => t[0] === 'r')?.[1] || content.url;
             const order = event.tags.find(t => t[0] === 'order')?.[1];
+            const featured = event.tags.find(t => t[0] === 'featured')?.[1] === 'true';
 
             if (!id || !name) return null;
 
@@ -85,6 +86,7 @@ export default function Projects() {
               author_pubkey: event.pubkey,
               created_at: new Date(event.created_at * 1000).toISOString(),
               order: order ? parseInt(order) : undefined,
+              featured,
             };
           } catch {
             return null;

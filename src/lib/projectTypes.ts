@@ -10,6 +10,7 @@ export interface ProjectData {
   author_pubkey: string;
   created_at: string;
   order?: number; // Display order
+  featured?: boolean; // Show on homepage
 }
 
 /**

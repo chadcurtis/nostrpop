@@ -9,6 +9,7 @@ import { useAuthor } from '@/hooks/useAuthor';
 import { useLatestAdminNotes } from '@/hooks/useAdminNotes';
 import { useLatestCards } from '@/hooks/useLatestCards';
 import { useArtworks } from '@/hooks/useArtworks';
+import { useFeaturedProjects } from '@/hooks/useProjects';
 import { genUserName } from '@/lib/genUserName';
 import { RelaySelector } from '@/components/RelaySelector';
 import { getFirstImage, stripImagesFromContent } from '@/lib/extractImages';
@@ -23,7 +24,9 @@ import {
   CreditCard,
   Palette,
   ShoppingCart,
-  Eye
+  Eye,
+  FolderKanban,
+  ExternalLink
 } from 'lucide-react';
 import type { NostrEvent, NostrMetadata } from '@nostrify/nostrify';
 import type { ArtworkData } from '@/lib/artTypes';
@@ -311,6 +314,7 @@ const Index = () => {
   const { data: adminNotes, isLoading: notesLoading, error: notesError } = useLatestAdminNotes(3);
   const { data: latestCards, isLoading: cardsLoading, error: cardsError } = useLatestCards(3);
   const { data: featuredArtworks, isLoading: artworksLoading, error: artworksError } = useArtworks('all');
+  const { data: featuredProjects, isLoading: projectsLoading } = useFeaturedProjects();
   const author = useAuthor(ADMIN_HEX);
   const metadata: NostrMetadata | undefined = author.data?.metadata;
 
@@ -331,9 +335,9 @@ const Index = () => {
         <div className="text-center mb-16 pt-8">
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild className="rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
-              <Link to="/canvas">
-                <Sparkles className="mr-2 h-5 w-5" />
-                Start Painting
+              <Link to="/projects">
+                <FolderKanban className="mr-2 h-5 w-5" />
+                Explore Projects
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="rounded-full">
@@ -344,6 +348,93 @@ const Index = () => {
             </Button>
           </div>
         </div>
+
+        {/* Featured Projects Section */}
+        {featuredProjects && featuredProjects.length > 0 && (
+          <div className="mb-16">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="text-3xl font-bold mb-2">Featured Projects</h2>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Explore our creative endeavors
+                </p>
+              </div>
+              <Button variant="outline" asChild>
+                <Link to="/projects" className="flex items-center space-x-2">
+                  <FolderKanban className="h-4 w-4" />
+                  <span>All Projects</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {featuredProjects.map((project, index) => (
+                <Card
+                  key={project.id}
+                  className="group hover:shadow-xl transition-all duration-300 cursor-pointer bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                  onClick={() => {
+                    if (project.url) {
+                      if (project.url.startsWith('http')) {
+                        window.open(project.url, '_blank');
+                      } else {
+                        window.location.href = project.url;
+                      }
+                    }
+                  }}
+                >
+                  {/* Project Thumbnail */}
+                  <div className="aspect-video relative overflow-hidden">
+                    {project.thumbnail ? (
+                      <img
+                        src={project.thumbnail}
+                        alt={project.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-purple-400 via-pink-400 to-indigo-400 dark:from-purple-600 dark:via-pink-600 dark:to-indigo-600 flex items-center justify-center">
+                        <FolderKanban className="h-16 w-16 text-white opacity-80" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Hover Button */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="gap-2"
+                      >
+                        Explore
+                        {project.url?.startsWith('http') ? (
+                          <ExternalLink className="h-3 w-3" />
+                        ) : (
+                          <ArrowRight className="h-3 w-3" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg font-semibold group-hover:text-purple-600 transition-colors line-clamp-1">
+                      {project.name}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
+                      {project.description}
+                    </p>
+                    <div className="flex items-center text-purple-600 group-hover:text-purple-700 transition-colors">
+                      <span className="text-xs font-medium">View project</span>
+                      <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Featured Art Section */}
         <div className="mb-16">

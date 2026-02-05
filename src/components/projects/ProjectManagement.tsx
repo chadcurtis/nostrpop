@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import {
   FolderKanban,
@@ -22,6 +23,7 @@ import {
   Upload,
   Image as ImageIcon,
   ExternalLink,
+  Star,
 } from 'lucide-react';
 import type { NostrEvent } from '@nostrify/nostrify';
 import { generateProjectUUID, type ProjectData } from '@/lib/projectTypes';
@@ -32,6 +34,7 @@ interface ProjectFormData {
   thumbnail: string;
   url: string;
   order: string;
+  featured: boolean;
 }
 
 export function ProjectManagement() {
@@ -51,6 +54,7 @@ export function ProjectManagement() {
     thumbnail: '',
     url: '',
     order: '',
+    featured: false,
   });
 
   // Fetch user's projects (kind 36171)
@@ -138,6 +142,9 @@ export function ProjectManagement() {
     if (formData.order) {
       tags.push(['order', formData.order]);
     }
+    if (formData.featured) {
+      tags.push(['featured', 'true']);
+    }
 
     const contentData = {
       name: formData.name,
@@ -163,6 +170,7 @@ export function ProjectManagement() {
             thumbnail: '',
             url: '',
             order: '',
+            featured: false,
           });
           queryClient.invalidateQueries({ queryKey: ['projects'] });
           queryClient.invalidateQueries({ queryKey: ['projects-admin'] });
@@ -181,6 +189,7 @@ export function ProjectManagement() {
     const thumbnail = event.tags.find(t => t[0] === 'image')?.[1] || content.thumbnail || '';
     const url = event.tags.find(t => t[0] === 'r')?.[1] || content.url || '';
     const order = event.tags.find(t => t[0] === 'order')?.[1] || '';
+    const featured = event.tags.find(t => t[0] === 'featured')?.[1] === 'true';
 
     setFormData({
       name,
@@ -188,6 +197,7 @@ export function ProjectManagement() {
       thumbnail,
       url,
       order,
+      featured,
     });
     setEditingProject(event);
     setIsCreating(true);
@@ -224,6 +234,7 @@ export function ProjectManagement() {
       thumbnail: '',
       url: '',
       order: '',
+      featured: false,
     });
   };
 
@@ -364,6 +375,23 @@ export function ProjectManagement() {
                 />
               </div>
 
+              <div className="space-y-2 p-4 border rounded-lg bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="featured"
+                    checked={formData.featured}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, featured: !!checked }))}
+                  />
+                  <Label htmlFor="featured" className="text-base font-medium flex items-center gap-2">
+                    <Star className="h-4 w-4 text-amber-600" />
+                    Feature on Homepage
+                  </Label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Display this project in the featured section on the homepage (limit: 3 projects)
+                </p>
+              </div>
+
               <div className="flex gap-2">
                 <Button type="submit" className="flex-1">
                   <Plus className="h-4 w-4 mr-2" />
@@ -416,6 +444,7 @@ export function ProjectManagement() {
                 const thumbnail = event.tags.find(t => t[0] === 'image')?.[1] || content.thumbnail;
                 const url = event.tags.find(t => t[0] === 'r')?.[1] || content.url;
                 const order = event.tags.find(t => t[0] === 'order')?.[1];
+                const featured = event.tags.find(t => t[0] === 'featured')?.[1] === 'true';
 
                 return (
                   <Card key={event.id} className="overflow-hidden">
@@ -436,8 +465,14 @@ export function ProjectManagement() {
                       <div className="flex-1 p-4">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
                               <h3 className="font-semibold text-lg">{name}</h3>
+                              {featured && (
+                                <Badge className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700 text-xs">
+                                  <Star className="h-3 w-3 mr-1" />
+                                  Featured
+                                </Badge>
+                              )}
                               {order && (
                                 <Badge variant="outline" className="text-xs">
                                   Order: {order}
