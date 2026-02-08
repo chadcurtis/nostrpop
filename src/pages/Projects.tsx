@@ -8,8 +8,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { FolderKanban, ExternalLink, Sparkles, ArrowRight, Users, Zap } from 'lucide-react';
+import { FolderKanban, ExternalLink, Sparkles, ArrowRight, Users, Zap, Award } from 'lucide-react';
 import { useNostrProjects } from '@/hooks/useNostrProjects';
+import { useBadges } from '@/hooks/useBadges';
 import type { ProjectData } from '@/lib/projectTypes';
 import type { NostrEvent } from '@nostrify/nostrify';
 
@@ -55,6 +56,9 @@ export default function Projects() {
 
   // Fetch Nostr Projects (collaborative art)
   const { data: nostrProjects = [], isLoading: nostrLoading } = useNostrProjects();
+
+  // Fetch POP Badges
+  const { data: badges = [], isLoading: badgesLoading } = useBadges();
 
   // Fetch custom projects from Nostr
   const { data: customProjects = [], isLoading } = useQuery({
@@ -294,6 +298,66 @@ export default function Projects() {
                   </Card>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* POP Badges Section */}
+          {badges.length > 0 && (
+            <div className="mt-16 max-w-6xl mx-auto">
+              <div className="text-center mb-8">
+                <div className="flex items-center justify-center mb-4">
+                  <Award className="h-8 w-8 text-yellow-600 mr-3" />
+                  <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 via-orange-600 to-red-600 bg-clip-text text-transparent">
+                    POP Badges
+                  </h2>
+                </div>
+                <p className="text-lg text-gray-600 dark:text-gray-300">
+                  Collect exclusive badges - Buy with sats and add to your Nostr profile
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {badges.slice(0, 6).map((badge) => (
+                  <Card
+                    key={badge.id}
+                    className="group overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 bg-white dark:bg-gray-800"
+                    onClick={() => navigate(`/badges#${badge.id}`)}
+                  >
+                    {/* Badge Image */}
+                    <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900/20 dark:to-orange-900/20">
+                      <img
+                        src={badge.image_url}
+                        alt={badge.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+
+                    {/* Content */}
+                    <CardHeader className="pb-3 pt-3">
+                      <CardTitle className="text-sm group-hover:text-purple-600 transition-colors truncate">
+                        {badge.title}
+                      </CardTitle>
+                      <Badge variant="default" className="gap-1 w-fit">
+                        <Zap className="h-3 w-3" />
+                        <span className="text-xs">{badge.price_sats.toLocaleString()}</span>
+                      </Badge>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+
+              {badges.length > 6 && (
+                <div className="text-center mt-6">
+                  <Button variant="outline" asChild>
+                    <a href="/badges" className="flex items-center space-x-2">
+                      <Award className="h-4 w-4" />
+                      <span>View All Badges</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </>

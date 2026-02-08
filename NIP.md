@@ -278,6 +278,136 @@ The artist biography page uses **kind 30023** (NIP-23 long-form content) with a 
 
 The artist page content is editable through the admin panel and supports full Markdown formatting. If no event is found, a default "My Story" content is displayed.
 
+## Nostr Projects (Kind 38171)
+
+Collaborative art projects where participants can join by selecting an image and paying in sats.
+
+### Event Structure
+
+```json
+{
+  "kind": 38171,
+  "content": {
+    "description": "<project description>",
+    "images": ["<image_url_1>", "<image_url_2>", ...]
+  },
+  "tags": [
+    ["d", "<project_id>"],
+    ["title", "<project title>"],
+    ["price", "<price_in_sats>"],
+    ["status", "active|completed|archived"],
+    ["featured", "true"],
+    ["author-handle", "<nostr_handle>"],
+    ["image", "<image_url>", "<index>"],
+    ["t", "nostr-project"],
+    ["alt", "Collaborative art project: <title>"]
+  ]
+}
+```
+
+### Fields
+
+- **d tag**: Unique project identifier (UUID)
+- **title tag**: Project title
+- **price tag**: Price in satoshis to join
+- **status tag**: Project status (active/completed/archived)
+- **featured tag**: If "true", shows on homepage and projects page
+- **author-handle tag**: Creator's Nostr handle (optional)
+- **image tags**: Each project image with index
+- **t tag**: Always includes `nostr-project` for filtering
+
+### Participant Events (Kind 38172)
+
+When someone joins a Nostr project:
+
+```json
+{
+  "kind": 38172,
+  "content": {
+    "payment_proof": "<lightning_payment_proof>"
+  },
+  "tags": [
+    ["p", "<project_id>"],
+    ["npub", "<participant_npub>"],
+    ["handle", "<participant_handle>"],
+    ["image", "<selected_image_url>"],
+    ["t", "nostr-project-participant"],
+    ["alt", "Joined project: <project_title>"]
+  ]
+}
+```
+
+### Usage
+
+- Admin creates projects with multiple images
+- Participants select their favorite image
+- Pay the specified amount in sats
+- Their selection is recorded on Nostr
+- Artist creates final collaborative artwork including all participants
+
+## POP Badges (Kind 38173)
+
+Purchasable badges inspired by badges.page that users can collect and add to their Nostr profiles.
+
+### Event Structure
+
+```json
+{
+  "kind": 38173,
+  "content": {
+    "description": "<optional description>"
+  },
+  "tags": [
+    ["d", "<badge_id>"],
+    ["title", "<badge title>"],
+    ["image", "<badge_image_url>"],
+    ["price", "<price_in_sats>"],
+    ["status", "active|sold_out|archived"],
+    ["featured", "true"],
+    ["t", "pop-badge"],
+    ["alt", "POP Badge: <title>"]
+  ]
+}
+```
+
+### Fields
+
+- **d tag**: Unique badge identifier (UUID)
+- **title tag**: Badge name
+- **image tag**: Badge image URL (single image)
+- **price tag**: Price in satoshis
+- **status tag**: Availability status
+- **featured tag**: If "true", shows on homepage and projects page
+- **t tag**: Always includes `pop-badge` for filtering
+
+### Badge Purchase Events (Kind 38174)
+
+When someone purchases a badge:
+
+```json
+{
+  "kind": 38174,
+  "content": {
+    "payment_proof": "<lightning_payment_proof>"
+  },
+  "tags": [
+    ["b", "<badge_id>"],
+    ["npub", "<buyer_npub>"],
+    ["t", "badge-purchase"],
+    ["alt", "Purchased badge: <badge_title>"]
+  ]
+}
+```
+
+### Usage
+
+- Admin creates badges with single image
+- Users browse badges on `/badges` page
+- Click to purchase, enter npub
+- Pay with Lightning
+- Badge is recorded on Nostr
+- Can be added to Nostr profile badges (NIP-58)
+
 ## References
 
 - [NIP-15: Nostr Marketplace](https://github.com/nostr-protocol/nips/blob/master/15.md)

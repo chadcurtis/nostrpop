@@ -16,6 +16,7 @@ import { PopUpManagement } from '@/components/popup/PopUpManagement';
 import { ArtistContentManagement } from '@/components/artist/ArtistContentManagement';
 import { ProjectManagement } from '@/components/projects/ProjectManagement';
 import { NostrProjectManagement } from '@/components/nostrprojects/NostrProjectManagement';
+import { BadgeManagement } from '@/components/badges/BadgeManagement';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import {
   Plus,
@@ -38,7 +39,8 @@ import {
   FileText,
   MapPin,
   User,
-  FolderKanban
+  FolderKanban,
+  Award
 } from 'lucide-react';
 
 const Admin = () => {
@@ -148,6 +150,14 @@ const Admin = () => {
       action: () => setActiveTab('nostr-projects'),
       badge: 'Collab'
     },
+    {
+      title: 'POP Badges',
+      description: 'Create purchasable badges',
+      icon: Award,
+      color: 'from-yellow-500 to-orange-500',
+      action: () => setActiveTab('badges'),
+      badge: 'Badges'
+    },
   ];
 
   const marketplaceActions = [
@@ -248,7 +258,7 @@ const Admin = () => {
 
         {/* Admin Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-10 max-w-7xl mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-11 max-w-7xl mx-auto mb-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="blog">
               <FileText className="h-4 w-4 mr-2" />
@@ -269,6 +279,10 @@ const Admin = () => {
             <TabsTrigger value="nostr-projects">
               <Users className="h-4 w-4 mr-2" />
               Nostr
+            </TabsTrigger>
+            <TabsTrigger value="badges">
+              <Award className="h-4 w-4 mr-2" />
+              Badges
             </TabsTrigger>
             <TabsTrigger value="cards">
               <CreditCard className="h-4 w-4 mr-2" />
@@ -446,6 +460,10 @@ const Admin = () => {
 
           <TabsContent value="nostr-projects">
             <NostrProjectManagement />
+          </TabsContent>
+
+          <TabsContent value="badges">
+            <BadgeManagement />
           </TabsContent>
 
           <TabsContent value="popup">
