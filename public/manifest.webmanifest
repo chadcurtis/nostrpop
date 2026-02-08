@@ -9,7 +9,7 @@
   "categories": ["entertainment", "social", "lifestyle"],
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "/nostrpop/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

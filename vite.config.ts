@@ -7,14 +7,15 @@ import { defineConfig } from "vitest/config";
 const cspPlugin = () => ({
   name: 'csp-plugin',
   transformIndexHtml: {
-    order: 'post' as const, // Changed to 'post' to run after Vite's transformations
-    handler(html: string, context: { server?: unknown }) {
-      const isDev = context.server; // Development mode has server context
+    order: 'post' as const,
+    handler(html: string, context: { server?: unknown; bundle?: unknown }) {
+      // In build mode, bundle exists; in dev mode, server exists
+      const isDev = !context.bundle;
 
-      // More restrictive CSP for production (frame-ancestors removed - not supported in meta tags)
+      // More restrictive CSP for production
       const prodCSP = "default-src 'none'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline' https://esm.sh; font-src 'self' data: https://esm.sh; base-uri 'self'; manifest-src 'self'; connect-src 'self' blob: https: wss:; img-src 'self' data: blob: https:; media-src 'self' https:; object-src 'none'; worker-src 'self' blob:";
 
-      // More permissive CSP for development (allows Vite HMR, frame-ancestors removed - not supported in meta tags)
+      // More permissive CSP for development (allows Vite HMR)
       const devCSP = "default-src 'none'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'self'; manifest-src 'self'; connect-src 'self' blob: https: wss:; img-src 'self' data: blob: https:; media-src 'self' https:; object-src 'none'; worker-src 'self' blob:";
 
       const csp = isDev ? devCSP : prodCSP;
@@ -31,7 +32,7 @@ const cspPlugin = () => ({
 });
 
 // https://vitejs.dev/config/
-export default defineConfig(() => ({
+export default defineConfig(({ mode }) => ({
   base: "/nostrpop/",
   server: {
     host: "::",
@@ -41,6 +42,9 @@ export default defineConfig(() => ({
     react(),
     cspPlugin(),
   ],
+  define: {
+    'import.meta.env.VITE_BUILD_MODE': JSON.stringify(mode),
+  },
   test: {
     globals: true,
     environment: 'jsdom',
