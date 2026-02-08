@@ -52,7 +52,7 @@ export function Navigation() {
             <img 
               src={BitPopArtLogo} 
               alt="BitPopArt" 
-              className="h-10 w-10"
+              className="h-10 w-10 rounded-lg"
             />
             <span className="font-bold text-xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
               BitPopArt

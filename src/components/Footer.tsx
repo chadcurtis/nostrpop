@@ -50,7 +50,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="md:col-span-1">
             <Link to="/" className="flex items-center space-x-2 mb-4">
-              <img src={BitPopArtLogo} alt="BitPopArt" className="h-10 w-10" />
+              <img src={BitPopArtLogo} alt="BitPopArt" className="h-10 w-10 rounded-lg" />
               <span className="font-bold text-xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
                 BitPopArt
               </span>
