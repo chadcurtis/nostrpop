@@ -18,6 +18,8 @@ import BlogPost from "./pages/BlogPost";
 import PopUp from "./pages/PopUp";
 import Artist from "./pages/Artist";
 import Projects from "./pages/Projects";
+import NostrProjects from "./pages/NostrProjects";
+import NostrProjectView from "./pages/NostrProjectView";
 import { CategoryDemo } from "./pages/CategoryDemo";
 import { ProductPage } from "./pages/ProductPage";
 import { DeleteProductPage } from "./pages/DeleteProductPage";
@@ -50,6 +52,8 @@ export function AppRouter() {
           <Route path="/popup" element={<PopUp />} />
           <Route path="/artist" element={<Artist />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/nostr-projects" element={<NostrProjects />} />
+          <Route path="/nostr-projects/:projectId" element={<NostrProjectView />} />
           <Route path="/categories" element={<CategoryDemo />} />
           <Route path="/shop/:productId/delete" element={<DeleteProductPage />} />
           <Route path="/shop/:productId" element={<ProductPage />} />

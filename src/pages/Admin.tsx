@@ -15,6 +15,7 @@ import { BlogPostManagement } from '@/components/blog/BlogPostManagement';
 import { PopUpManagement } from '@/components/popup/PopUpManagement';
 import { ArtistContentManagement } from '@/components/artist/ArtistContentManagement';
 import { ProjectManagement } from '@/components/projects/ProjectManagement';
+import { NostrProjectManagement } from '@/components/nostrprojects/NostrProjectManagement';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import {
   Plus,
@@ -139,6 +140,14 @@ const Admin = () => {
       action: () => setActiveTab('projects'),
       badge: 'Projects'
     },
+    {
+      title: 'Nostr Projects',
+      description: 'Collaborative art projects',
+      icon: Users,
+      color: 'from-purple-500 to-indigo-500',
+      action: () => setActiveTab('nostr-projects'),
+      badge: 'Collab'
+    },
   ];
 
   const marketplaceActions = [
@@ -239,7 +248,7 @@ const Admin = () => {
 
         {/* Admin Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-9 max-w-7xl mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-10 max-w-7xl mx-auto mb-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="blog">
               <FileText className="h-4 w-4 mr-2" />
@@ -256,6 +265,10 @@ const Admin = () => {
             <TabsTrigger value="projects">
               <FolderKanban className="h-4 w-4 mr-2" />
               Projects
+            </TabsTrigger>
+            <TabsTrigger value="nostr-projects">
+              <Users className="h-4 w-4 mr-2" />
+              Nostr
             </TabsTrigger>
             <TabsTrigger value="cards">
               <CreditCard className="h-4 w-4 mr-2" />
@@ -429,6 +442,10 @@ const Admin = () => {
                 <ProjectManagement />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="nostr-projects">
+            <NostrProjectManagement />
           </TabsContent>
 
           <TabsContent value="popup">

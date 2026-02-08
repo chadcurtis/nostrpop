@@ -16,6 +16,7 @@ const navigationItems = [
   { name: 'PopUp', href: '/popup', icon: '🗺️' },
   { name: 'Art', href: '/art', icon: '🖼️' },
   { name: 'Projects', href: '/projects', icon: '🎨' },
+  { name: 'Nostr Projects', href: '/nostr-projects', icon: '⚡' },
   { name: 'Shop', href: '/shop', icon: '🛍️' },
 ];
 
