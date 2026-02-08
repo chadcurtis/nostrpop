@@ -75,32 +75,18 @@ export function Navigation() {
               </Link>
             ))}
             {isAdmin && (
-              <>
-                <Link
-                  to="/admin"
-                  className={cn(
-                    "flex items-center space-x-1 px-4 py-2 rounded-full text-sm font-medium transition-colors",
-                    isActive('/admin')
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                  )}
-                >
-                  <Shield className="h-4 w-4" />
-                  <span>Admin</span>
-                </Link>
-                <Link
-                  to="/categories"
-                  className={cn(
-                    "flex items-center space-x-1 px-4 py-2 rounded-full text-sm font-medium transition-colors",
-                    isActive('/categories')
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                  )}
-                >
-                  <span className="text-base">🏷️</span>
-                  <span>Categories</span>
-                </Link>
-              </>
+              <Link
+                to="/admin"
+                className={cn(
+                  "flex items-center space-x-1 px-4 py-2 rounded-full text-sm font-medium transition-colors",
+                  isActive('/admin')
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                )}
+              >
+                <Shield className="h-4 w-4" />
+                <span>Admin</span>
+              </Link>
             )}
           </div>
 
@@ -180,34 +166,19 @@ export function Navigation() {
                       </Link>
                     ))}
                     {isAdmin && (
-                      <>
-                        <Link
-                          to="/admin"
-                          onClick={() => setIsOpen(false)}
-                          className={cn(
-                            "flex items-center space-x-3 px-4 py-3 rounded-full text-base font-medium transition-colors",
-                            isActive('/admin')
-                              ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                          )}
-                        >
-                          <Shield className="h-5 w-5" />
-                          <span>Admin</span>
-                        </Link>
-                        <Link
-                          to="/categories"
-                          onClick={() => setIsOpen(false)}
-                          className={cn(
-                            "flex items-center space-x-3 px-4 py-3 rounded-full text-base font-medium transition-colors",
-                            isActive('/categories')
-                              ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                          )}
-                        >
-                          <span className="text-xl">🏷️</span>
-                          <span>Categories</span>
-                        </Link>
-                      </>
+                      <Link
+                        to="/admin"
+                        onClick={() => setIsOpen(false)}
+                        className={cn(
+                          "flex items-center space-x-3 px-4 py-3 rounded-full text-base font-medium transition-colors",
+                          isActive('/admin')
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                        )}
+                      >
+                        <Shield className="h-5 w-5" />
+                        <span>Admin</span>
+                      </Link>
                     )}
                   </div>
 

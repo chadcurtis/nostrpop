@@ -109,31 +109,7 @@ const Admin = () => {
     );
   }
 
-  const contentActions = [
-    {
-      title: 'News Articles',
-      description: 'Publish news and blog posts',
-      icon: FileText,
-      color: 'from-blue-500 to-cyan-500',
-      action: () => setActiveTab('blog'),
-      badge: 'News'
-    },
-    {
-      title: 'Artist Page',
-      description: 'Update your artist bio and story',
-      icon: User,
-      color: 'from-purple-500 to-pink-500',
-      action: () => setActiveTab('artist'),
-      badge: 'Bio'
-    },
-    {
-      title: 'PopUp Events',
-      description: 'Manage worldwide event schedule',
-      icon: MapPin,
-      color: 'from-green-500 to-emerald-500',
-      action: () => setActiveTab('popup'),
-      badge: 'Events'
-    },
+  const projectsActions = [
     {
       title: 'Projects Portfolio',
       description: 'Showcase creative projects',
@@ -160,15 +136,7 @@ const Admin = () => {
     },
   ];
 
-  const marketplaceActions = [
-    {
-      title: 'Art Gallery',
-      description: 'Manage artwork sales and auctions',
-      icon: Palette,
-      color: 'from-pink-500 to-rose-500',
-      action: () => navigate('/art'),
-      badge: 'Gallery'
-    },
+  const bitpopcardsActions = [
     {
       title: 'POP Cards',
       description: 'Create and share digital cards',
@@ -178,6 +146,14 @@ const Admin = () => {
       badge: 'Cards'
     },
     {
+      title: 'Art Gallery',
+      description: 'Manage artwork sales and auctions',
+      icon: Palette,
+      color: 'from-pink-500 to-rose-500',
+      action: () => navigate('/art'),
+      badge: 'Gallery'
+    },
+    {
       title: 'Shop Products',
       description: 'Marketplace product management',
       icon: ShoppingBag,
@@ -185,14 +161,33 @@ const Admin = () => {
       action: () => setActiveTab('shop'),
       badge: 'Shop'
     },
+  ];
+
+  const contentActions = [
     {
-      title: 'Categories',
-      description: 'Organize shop categories',
-      icon: Tags,
-      color: 'from-indigo-500 to-blue-500',
-      action: () => setActiveTab('categories'),
-      badge: 'Tags'
-    }
+      title: 'News Articles',
+      description: 'Publish news and blog posts',
+      icon: FileText,
+      color: 'from-blue-500 to-cyan-500',
+      action: () => setActiveTab('blog'),
+      badge: 'News'
+    },
+    {
+      title: 'Artist Page',
+      description: 'Update your artist bio and story',
+      icon: User,
+      color: 'from-purple-500 to-pink-500',
+      action: () => setActiveTab('artist'),
+      badge: 'Bio'
+    },
+    {
+      title: 'PopUp Events',
+      description: 'Manage worldwide event schedule',
+      icon: MapPin,
+      color: 'from-green-500 to-emerald-500',
+      action: () => setActiveTab('popup'),
+      badge: 'Events'
+    },
   ];
 
   const statsCards = [
@@ -258,7 +253,7 @@ const Admin = () => {
 
         {/* Admin Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-11 max-w-7xl mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 lg:grid-cols-10 max-w-7xl mx-auto mb-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="blog">
               <FileText className="h-4 w-4 mr-2" />
@@ -296,20 +291,16 @@ const Admin = () => {
               <Palette className="h-4 w-4 mr-2" />
               Art
             </TabsTrigger>
-            <TabsTrigger value="categories">
-              <Tags className="h-4 w-4 mr-2" />
-              Categories
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-8">
             {/* Quick Actions Overview */}
             <div className="space-y-8">
-              {/* Content Management Section */}
+              {/* Projects Section */}
               <div>
-                <h2 className="text-2xl font-semibold mb-6 text-center">Content Management</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-                  {contentActions.map((action, index) => (
+                <h2 className="text-2xl font-semibold mb-6 text-center">Projects</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                  {projectsActions.map((action, index) => (
                     <Card
                       key={index}
                       className="group hover:shadow-xl transition-all duration-300 cursor-pointer bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg"
@@ -342,11 +333,48 @@ const Admin = () => {
                 </div>
               </div>
 
-              {/* Commerce & Marketplace Section */}
+              {/* BitPopCards Section */}
               <div>
-                <h2 className="text-2xl font-semibold mb-6 text-center">Commerce & Marketplace</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-                  {marketplaceActions.map((action, index) => (
+                <h2 className="text-2xl font-semibold mb-6 text-center">BitPopCards</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                  {bitpopcardsActions.map((action, index) => (
+                    <Card
+                      key={index}
+                      className="group hover:shadow-xl transition-all duration-300 cursor-pointer bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg"
+                      onClick={action.action}
+                    >
+                      <CardHeader className="pb-4">
+                        <div className="flex items-center justify-between">
+                          <div className={`p-3 rounded-lg bg-gradient-to-r ${action.color} text-white`}>
+                            <action.icon className="h-6 w-6" />
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {action.badge}
+                          </Badge>
+                        </div>
+                        <CardTitle className="text-lg group-hover:text-purple-600 transition-colors">
+                          {action.title}
+                        </CardTitle>
+                        <CardDescription className="text-sm">
+                          {action.description}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="flex items-center text-purple-600 group-hover:text-purple-700 transition-colors">
+                          <span className="text-sm font-medium">Manage</span>
+                          <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              {/* Content Management Section */}
+              <div>
+                <h2 className="text-2xl font-semibold mb-6 text-center">Content Management</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                  {contentActions.map((action, index) => (
                     <Card
                       key={index}
                       className="group hover:shadow-xl transition-all duration-300 cursor-pointer bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg"
@@ -524,22 +552,6 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="categories">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Tags className="h-6 w-6 mr-2" />
-                  Shop Category Management
-                </CardTitle>
-                <CardDescription>
-                  Add, edit, or remove product categories for your shop
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <CategoryManagement />
-              </CardContent>
-            </Card>
-          </TabsContent>
         </Tabs>
 
         {/* Platform Info */}
