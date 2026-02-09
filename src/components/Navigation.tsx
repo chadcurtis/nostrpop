@@ -10,22 +10,18 @@ import { useTheme } from '@/hooks/useTheme';
 import { Menu, Moon, Sun, Sparkles, Shield, Search as SearchIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import BitPopArtLogo from '@/assets/bitpopart-logo.png';
-import NewsIcon from '@/assets/News_button_1.svg';
-import ArtistIcon from '@/assets/artist_button_1.svg';
-import PopUpIcon from '@/assets/PopUP_button_1.svg';
-import ArtIcon from '@/assets/Art_button_1.svg';
-import ProjectsIcon from '@/assets/projects_button_1.svg';
-import FundraisingIcon from '@/assets/fundrasing_button_1.svg';
-import ShopIcon from '@/assets/Shop_button_1.svg';
+
+// Get the base path from import.meta.env or default to '/'
+const basePath = import.meta.env.BASE_URL || '/';
 
 const navigationItems = [
-  { name: 'News', href: '/blog', icon: NewsIcon },
-  { name: 'Artist', href: '/artist', icon: ArtistIcon },
-  { name: 'PopUp', href: '/popup', icon: PopUpIcon },
-  { name: 'Art', href: '/art', icon: ArtIcon },
-  { name: 'Projects', href: '/projects', icon: ProjectsIcon },
-  { name: 'Fundraising', href: '/fundraising', icon: FundraisingIcon },
-  { name: 'Shop', href: '/shop', icon: ShopIcon },
+  { name: 'News', href: '/blog', icon: `${basePath}News_button_1.svg` },
+  { name: 'Artist', href: '/artist', icon: `${basePath}artist_button_1.svg` },
+  { name: 'PopUp', href: '/popup', icon: `${basePath}PopUP_button_1.svg` },
+  { name: 'Art', href: '/art', icon: `${basePath}Art_button_1.svg` },
+  { name: 'Projects', href: '/projects', icon: `${basePath}projects_button_1.svg` },
+  { name: 'Fundraising', href: '/fundraising', icon: `${basePath}fundrasing_button_1.svg` },
+  { name: 'Shop', href: '/shop', icon: `${basePath}Shop_button_1.svg` },
 ];
 
 export function Navigation() {
