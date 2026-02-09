@@ -53,9 +53,9 @@ export function Navigation() {
             className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
           >
             <img 
-              src={BitPopArtLogo} 
-              alt="BitPopArt" 
-              className="h-10 w-10 rounded-lg"
+              src={`${basePath}B-Funny_avatar_orange.svg`}
+              alt="BitPopArt Logo" 
+              className="h-10 w-10"
             />
             <span className="font-bold text-xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
               BitPopArt
