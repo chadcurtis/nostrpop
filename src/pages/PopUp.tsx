@@ -12,7 +12,6 @@ import { ClawstrShare } from '@/components/ClawstrShare';
 import { ZapButton } from '@/components/ZapButton';
 import { MapPin, Calendar, ExternalLink, Globe, Share2 } from 'lucide-react';
 import { format } from 'date-fns';
-import type { NostrEvent } from '@nostrify/nostrify';
 import { POPUP_TYPE_CONFIG, POPUP_STATUS_CONFIG, type PopUpType, type PopUpStatus, type PopUpEventData } from '@/lib/popupTypes';
 import { WorldMap } from '@/components/popup/WorldMap';
 
@@ -80,6 +79,7 @@ export default function PopUp() {
             endDate,
             image,
             link,
+            event,
           };
         })
         .filter((e): e is PopUpEventData => e !== null)

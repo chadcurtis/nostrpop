@@ -31,7 +31,7 @@ import {
   ZoomOut,
   Sparkles
 } from 'lucide-react';
-import type { NostrEvent, NostrMetadata } from '@nostrify/nostrify';
+import type { NostrMetadata } from '@nostrify/nostrify';
 
 // Canvas dimensions: 10,000 x 10,000 = 100 million pixels
 const CANVAS_WIDTH = 10000;
@@ -59,7 +59,7 @@ function Canvas100M() {
   const { user } = useCurrentUser();
   const { nostr } = useNostr();
   const { toast } = useToast();
-  const { createInvoice, invoice, isLoading: paymentLoading, clearInvoice } = useLightningPayment();
+  const { createInvoice, invoice, isLoading: _paymentLoading, clearInvoice } = useLightningPayment();
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -138,7 +138,7 @@ function Canvas100M() {
       const pixelData: PixelData[] = events
         .map(event => {
           try {
-            const content = JSON.parse(event.content);
+            JSON.parse(event.content); // validate JSON
             const xTag = event.tags.find(([name]) => name === 'x')?.[1];
             const yTag = event.tags.find(([name]) => name === 'y')?.[1];
             const colorTag = event.tags.find(([name]) => name === 'color')?.[1];
@@ -648,7 +648,7 @@ function Canvas100M() {
           text: shareText,
           url: shareUrl
         });
-      } catch (error) {
+      } catch {
         // User cancelled or share failed
         copyToClipboard(shareText + ' ' + shareUrl);
       }
@@ -855,7 +855,7 @@ function Canvas100M() {
                         )}
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-40 overflow-y-auto">
-                        {pendingPixels.map((pixel, idx) => (
+                        {pendingPixels.map((pixel) => (
                           <div key={pixel.id} className="flex items-center space-x-2 text-xs">
                             <div 
                               className="w-6 h-6 border rounded" 

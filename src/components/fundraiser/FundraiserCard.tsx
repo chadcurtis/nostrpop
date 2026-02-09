@@ -26,10 +26,33 @@ import {
   Copy,
   CheckCircle2,
 } from 'lucide-react';
-import { formatSats, calculateProgress, type FundraiserData } from '@/lib/fundraiserTypes';
+import { formatSats, calculateProgress, type FundraiserData, type FundraiserContribution } from '@/lib/fundraiserTypes';
 
 interface FundraiserCardProps {
   fundraiser: FundraiserData;
+}
+
+function ContributorRow({ contribution, index }: { contribution: FundraiserContribution; index: number }) {
+  const contributorAuthor = useAuthor(contribution.contributor_npub);
+  const contributorMeta = contributorAuthor.data?.metadata;
+
+  return (
+    <div className="flex items-center justify-between text-sm p-2 rounded bg-gray-50 dark:bg-gray-800/50">
+      <div className="flex items-center gap-2">
+        <Badge variant="outline" className="w-6 h-6 flex items-center justify-center p-0">
+          {index + 1}
+        </Badge>
+        <Avatar className="h-6 w-6">
+          <AvatarImage src={contributorMeta?.picture} />
+          <AvatarFallback>{contributorMeta?.name?.[0] || '?'}</AvatarFallback>
+        </Avatar>
+        <span className="font-medium">{contributorMeta?.name || 'Anonymous'}</span>
+      </div>
+      <span className="font-semibold text-purple-600 dark:text-purple-400">
+        {formatSats(contribution.amount_sats)} sats
+      </span>
+    </div>
+  );
 }
 
 export function FundraiserCard({ fundraiser }: FundraiserCardProps) {
@@ -229,28 +252,9 @@ export function FundraiserCard({ fundraiser }: FundraiserCardProps) {
               Top Contributors
             </h3>
             <div className="space-y-2">
-              {topContributors.map((contribution, index) => {
-                const contributorAuthor = useAuthor(contribution.contributor_npub);
-                const contributorMeta = contributorAuthor.data?.metadata;
-                
-                return (
-                  <div key={index} className="flex items-center justify-between text-sm p-2 rounded bg-gray-50 dark:bg-gray-800/50">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="w-6 h-6 flex items-center justify-center p-0">
-                        {index + 1}
-                      </Badge>
-                      <Avatar className="h-6 w-6">
-                        <AvatarImage src={contributorMeta?.picture} />
-                        <AvatarFallback>{contributorMeta?.name?.[0] || '?'}</AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium">{contributorMeta?.name || 'Anonymous'}</span>
-                    </div>
-                    <span className="font-semibold text-purple-600 dark:text-purple-400">
-                      {formatSats(contribution.amount_sats)} sats
-                    </span>
-                  </div>
-                );
-              })}
+              {topContributors.map((contribution, index) => (
+                <ContributorRow key={index} contribution={contribution} index={index} />
+              ))}
             </div>
           </div>
         )}

@@ -14,7 +14,7 @@ interface AppProviderProps {
 }
 
 // Zod schema for AppConfig validation
-const AppConfigSchema: z.ZodType<AppConfig, z.ZodTypeDef, unknown> = z.object({
+const AppConfigSchema = z.object({
   theme: z.enum(['dark', 'light', 'system']),
   relayUrl: z.string().url(),
 });
@@ -33,9 +33,9 @@ export function AppProvider(props: AppProviderProps) {
     defaultConfig,
     {
       serialize: JSON.stringify,
-      deserialize: (value: string) => {
+      deserialize: (value: string): AppConfig => {
         const parsed = JSON.parse(value);
-        return AppConfigSchema.parse(parsed);
+        return AppConfigSchema.parse(parsed) as AppConfig;
       }
     }
   );

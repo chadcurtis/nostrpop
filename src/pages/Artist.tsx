@@ -7,7 +7,6 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { User, Image as ImageIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import type { NostrEvent } from '@nostrify/nostrify';
 
 const ARTIST_PUBKEY = '7d33ba57d8a6e8869a1f1d5215254597594ac0dbfeb01b690def8c461b82db35'; // traveltelly's pubkey
 

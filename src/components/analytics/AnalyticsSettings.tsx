@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { BarChart3, Save, Copy, Check, AlertCircle } from 'lucide-react';
+import { BarChart3, Save, Copy, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
 
 export function AnalyticsSettings() {
@@ -21,7 +21,7 @@ export function AnalyticsSettings() {
         const data = JSON.parse(stored);
         setGoogleAnalyticsId(data.googleAnalyticsId || '');
         setIsEnabled(data.enabled || false);
-      } catch (e) {
+      } catch {
         // Ignore parse errors
       }
     }
@@ -39,10 +39,6 @@ export function AnalyticsSettings() {
       title: 'Analytics settings saved',
       description: 'Refresh the page to apply Google Analytics tracking.',
     });
-  };
-
-  const handleToggle = () => {
-    setIsEnabled(!isEnabled);
   };
 
   const copyGtagCode = () => {

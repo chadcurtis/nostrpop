@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/hooks/usePayment';
 import { useMarketplaceProduct } from '@/hooks/useMarketplaceProducts';
@@ -19,7 +18,7 @@ export function ProductPage() {
   const { toast } = useToast();
 
   // Fetch live price from source URL
-  const { data: livePrice, isLoading: priceLoading } = useLivePrice(
+  const { data: livePrice } = useLivePrice(
     product?.contact_url || product?.product_url,
     product?.price,
     product?.currency

@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useEffect, useRef } from 'react';
 import { MapPin } from 'lucide-react';
-import { POPUP_TYPE_CONFIG, POPUP_STATUS_CONFIG, type PopUpEventData } from '@/lib/popupTypes';
+import { POPUP_TYPE_CONFIG, type PopUpEventData } from '@/lib/popupTypes';
 import { format } from 'date-fns';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -13,7 +11,7 @@ interface WorldMapProps {
 
 // Fix default marker icon issue with Leaflet
 const fixLeafletIcons = () => {
-  // @ts-ignore
+  // @ts-expect-error Leaflet internal property override for custom icons
   delete L.Icon.Default.prototype._getIconUrl;
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -26,8 +24,6 @@ export function WorldMap({ events }: WorldMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
-  const [hoveredEvent, setHoveredEvent] = useState<PopUpEventData | null>(null);
-
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
@@ -113,7 +109,6 @@ export function WorldMap({ events }: WorldMapProps) {
 
       // Create popup
       const typeConfig = POPUP_TYPE_CONFIG[event.type];
-      const statusConfig = event.status ? POPUP_STATUS_CONFIG[event.status] : null;
       const popupContent = `
         <div style="min-width: 250px; max-width: 300px; font-family: system-ui;">
           ${event.image ? `

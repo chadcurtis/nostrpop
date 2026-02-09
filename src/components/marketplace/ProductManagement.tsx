@@ -28,8 +28,7 @@ import {
   TrendingUp,
   DollarSign,
   ShoppingCart,
-  AlertTriangle,
-  Link2
+  AlertTriangle
 } from 'lucide-react';
 
 import { useCategories } from '@/hooks/useCategories';
@@ -39,7 +38,16 @@ export function ProductManagement() {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingProduct, setEditingProduct] = useState<MarketplaceProduct | null>(null);
-  const [importedProductData, setImportedProductData] = useState<any>(null);
+  const [importedProductData, setImportedProductData] = useState<{
+    name?: string;
+    description?: string;
+    price?: number;
+    currency?: string;
+    priceInSats?: number;
+    images?: string[];
+    url?: string;
+    category?: string;
+  } | null>(null);
 
   const { user } = useCurrentUser();
   const { toast } = useToast();

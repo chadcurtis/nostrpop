@@ -26,9 +26,13 @@ export default {
         const hasSrc = node.attributes && node.attributes.some(attr => 
           attr.key && attr.key.value === 'src'
         );
+        const isJsonLd = node.attributes && node.attributes.some(attr =>
+          attr.key && attr.key.value === 'type' && attr.value && attr.value.value === 'application/ld+json'
+        );
 
         // If the script has content but no src attribute, it's an inline script
-        if (hasContent && !hasSrc) {
+        // Allow JSON-LD structured data scripts (standard SEO practice)
+        if (hasContent && !hasSrc && !isJsonLd) {
           context.report({
             node,
             messageId: 'noInlineScript',

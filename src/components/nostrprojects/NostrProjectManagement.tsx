@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNostr } from '@nostrify/react';
 import { useNostrPublish } from '@/hooks/useNostrPublish';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useNostrProjects } from '@/hooks/useNostrProjects';
@@ -21,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, X, Upload, Image as ImageIcon, Trash2, Edit, Eye, Award } from 'lucide-react';
+import { Plus, X, Upload, Image as ImageIcon, Edit, Award } from 'lucide-react';
 import { generateNostrProjectUUID } from '@/lib/nostrProjectTypes';
 import type { NostrProjectData } from '@/lib/nostrProjectTypes';
 
@@ -261,7 +260,7 @@ export function NostrProjectManagement() {
             {/* Status */}
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
-              <Select value={status} onValueChange={(v) => setStatus(v as any)}>
+              <Select value={status} onValueChange={(v) => setStatus(v as 'active' | 'completed' | 'archived')}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

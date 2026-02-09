@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNostr } from '@nostrify/react';
 import type { NostrEvent } from '@nostrify/nostrify';
-import { getProductsByCategory, getProductById } from '@/lib/sampleProducts';
 import { useCurrentUser } from './useCurrentUser';
 import { useToast } from './useToast';
 
@@ -47,7 +46,7 @@ interface MarketplaceProduct {
 
 export function useMarketplaceProducts(category?: string) {
   const { nostr } = useNostr();
-  const { user } = useCurrentUser();
+  const { user: _user } = useCurrentUser();
 
   return useQuery({
     queryKey: ['marketplace-products', category],
@@ -293,9 +292,9 @@ export function useDeleteProduct() {
       // HARD DELETE: Remove from ALL cached queries immediately
       queryClient.setQueriesData(
         { queryKey: ['marketplace-products'] }, 
-        (oldData: any) => {
+        (oldData: MarketplaceProduct[] | undefined) => {
           if (!oldData || !Array.isArray(oldData)) return oldData;
-          const filtered = oldData.filter((product: any) => {
+          const filtered = oldData.filter((product: MarketplaceProduct) => {
             const productAddress = `30018:${product.event?.pubkey}:${product.id}`;
             return productAddress !== data.productAddress;
           });

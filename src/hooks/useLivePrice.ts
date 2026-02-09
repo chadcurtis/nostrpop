@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-interface LivePriceData {
+interface _LivePriceData {
   price: number;
   currency: string;
   priceInSats?: number;

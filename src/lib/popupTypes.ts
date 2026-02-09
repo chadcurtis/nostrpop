@@ -2,6 +2,8 @@
  * PopUp event types and utilities
  */
 
+import type { NostrEvent } from '@nostrify/nostrify';
+
 export type PopUpType = 'art' | 'shop' | 'event';
 
 export type PopUpStatus = 'confirmed' | 'option';
@@ -19,6 +21,7 @@ export interface PopUpEventData {
   endDate?: string; // YYYY-MM-DD
   image?: string;
   link?: string;
+  event?: NostrEvent;
 }
 
 export const POPUP_TYPE_CONFIG: Record<PopUpType, { 

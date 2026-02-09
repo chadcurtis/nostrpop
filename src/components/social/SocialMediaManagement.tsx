@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Plus, X, Edit, Trash2, ExternalLink } from 'lucide-react';
+import { Plus, X, Edit, Trash2 } from 'lucide-react';
 import type { SocialMediaLink } from '@/lib/pageTypes';
 
 const SOCIAL_PLATFORMS = [

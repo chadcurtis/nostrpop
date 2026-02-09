@@ -7,7 +7,7 @@ import { RelaySelector } from '@/components/RelaySelector';
 import { Search } from '@/components/Search';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useTheme } from '@/hooks/useTheme';
-import { Menu, Moon, Sun, Sparkles, Shield, Search as SearchIcon } from 'lucide-react';
+import { Menu, Moon, Sun, Shield, Search as SearchIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import BitPopArtLogo from '@/assets/bitpopart-logo.png';
 

@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, X, Upload, FileText, Edit, Image as ImageIcon, ExternalLink } from 'lucide-react';
-import { generatePageUUID, generateSlug } from '@/lib/pageTypes';
+import { generateSlug } from '@/lib/pageTypes';
 import type { PageData } from '@/lib/pageTypes';
 
 export function PageManagement() {

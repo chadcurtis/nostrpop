@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSeoMeta } from '@unhead/react';
-import { useBadges, useBadge, useBadgePurchases } from '@/hooks/useBadges';
+import { useBadges, useBadgePurchases } from '@/hooks/useBadges';
 import { useNostrPublish } from '@/hooks/useNostrPublish';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Award, Zap, Users, Check, X as CloseIcon } from 'lucide-react';
+import { Award, Zap, Users, Check } from 'lucide-react';
 import { nip19 } from 'nostr-tools';
 
 export default function Badges() {
@@ -43,7 +43,7 @@ export default function Badges() {
         setError('Invalid npub format. Please provide a valid Nostr npub.');
         return;
       }
-    } catch (e) {
+    } catch {
       setError('Invalid npub format. Please provide a valid Nostr npub.');
       return;
     }
@@ -54,7 +54,7 @@ export default function Badges() {
     createEvent({
       kind: 38174,
       content: JSON.stringify({
-        payment_proof: 'pending', // In a real app, this would include Lightning payment proof
+        payment_proof: 'pending',
       }),
       tags: [
         ['b', selectedBadge.id], // Reference to badge

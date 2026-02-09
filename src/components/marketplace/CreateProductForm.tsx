@@ -81,7 +81,7 @@ export function CreateProductForm({ onSuccess, onCancel, initialData }: CreatePr
   const [isUploading, setIsUploading] = useState(false);
   const [isUploadingFiles, setIsUploadingFiles] = useState(false);
   const [specs, setSpecs] = useState<Array<{ key: string; value: string }>>([]);
-  const [contactUrl, setContactUrl] = useState<string>(initialData?.url || '');
+  const [, setContactUrl] = useState<string>(initialData?.url || '');
   const [satsPrice, setSatsPrice] = useState<number | undefined>(initialData?.priceInSats);
 
   const { user } = useCurrentUser();

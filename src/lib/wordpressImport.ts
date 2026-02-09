@@ -150,13 +150,15 @@ function htmlToMarkdown(element: HTMLElement): string {
       case 'em':
       case 'i':
         return `*${children}*`;
-      case 'a':
+      case 'a': {
         const href = el.getAttribute('href') || '';
         return `[${children}](${href})`;
-      case 'img':
+      }
+      case 'img': {
         const src = el.getAttribute('src') || '';
         const alt = el.getAttribute('alt') || '';
         return `![${alt}](${src})\n\n`;
+      }
       case 'ul':
       case 'ol':
         return `\n${children}\n`;

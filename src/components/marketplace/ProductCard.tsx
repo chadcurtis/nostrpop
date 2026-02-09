@@ -21,10 +21,11 @@ import {
   Zap,
   Share2
 } from 'lucide-react';
+import type { NostrEvent } from '@nostrify/nostrify';
 
 interface MarketplaceProduct {
   id: string;
-  event?: unknown; // NostrEvent - optional for sample data
+  event?: NostrEvent; // NostrEvent - optional for sample data
   name: string;
   description: string;
   images: string[];
@@ -37,6 +38,7 @@ interface MarketplaceProduct {
   shipping?: Array<{ id: string; cost: number }>;
   digital_files?: string[];
   product_url?: string; // URL for physical products
+  contact_url?: string; // URL for contacting seller
   stall_id: string;
   created_at: string;
 }

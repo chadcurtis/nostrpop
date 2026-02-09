@@ -22,11 +22,10 @@ import {
   X,
   Upload,
   Image as ImageIcon,
-  ExternalLink,
   Calendar,
 } from 'lucide-react';
 import type { NostrEvent } from '@nostrify/nostrify';
-import { generateFundraiserUUID, formatSats, calculateProgress, type FundraiserData } from '@/lib/fundraiserTypes';
+import { generateFundraiserUUID, formatSats } from '@/lib/fundraiserTypes';
 
 interface FundraiserFormData {
   title: string;

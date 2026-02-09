@@ -64,28 +64,21 @@ export default function BlogPost() {
   };
 
   // Set SEO metadata
-  if (post) {
-    const title = getArticleTitle(post);
-    const summary = getArticleSummary(post);
-    const image = getArticleImage(post);
+  const seoTitle = post ? getArticleTitle(post) : undefined;
+  const seoSummary = post ? getArticleSummary(post) : undefined;
+  const seoImage = post ? getArticleImage(post) : undefined;
 
-    useSeoMeta({
-      title: `${title} - BitPopArt Blog`,
-      description: summary || post.content.slice(0, 160),
-      ogTitle: title,
-      ogDescription: summary,
-      ogImage: image,
-      twitterCard: 'summary_large_image',
-      twitterTitle: title,
-      twitterDescription: summary,
-      twitterImage: image,
-    });
-  } else {
-    useSeoMeta({
-      title: 'Blog Post - BitPopArt',
-      description: 'Read this article on BitPopArt',
-    });
-  }
+  useSeoMeta({
+    title: seoTitle ? `${seoTitle} - BitPopArt Blog` : 'Blog Post - BitPopArt',
+    description: seoSummary || (post ? post.content.slice(0, 160) : 'Read this article on BitPopArt'),
+    ogTitle: seoTitle,
+    ogDescription: seoSummary,
+    ogImage: seoImage,
+    twitterCard: post ? 'summary_large_image' : undefined,
+    twitterTitle: seoTitle,
+    twitterDescription: seoSummary,
+    twitterImage: seoImage,
+  });
 
   if (isLoading) {
     return (

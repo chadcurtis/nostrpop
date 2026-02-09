@@ -18,7 +18,6 @@ import {
   formatPopupForClawstr,
   formatProductForClawstr,
   createCustomClawstrPost,
-  type ClawstrSubclaw,
 } from '@/lib/clawstr';
 
 interface ClawstrShareProps {

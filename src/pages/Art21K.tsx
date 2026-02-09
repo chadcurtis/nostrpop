@@ -22,7 +22,6 @@ import {
   Sparkles,
   Info
 } from 'lucide-react';
-import type { NostrEvent } from '@nostrify/nostrify';
 
 // Event kind for 21K Art entries
 const ART_21K_KIND = 30421;

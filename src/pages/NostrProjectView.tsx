@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Zap, Users, Check, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Zap, Users, Check } from 'lucide-react';
 import { nip19 } from 'nostr-tools';
 
 export default function NostrProjectView() {
@@ -45,7 +45,7 @@ export default function NostrProjectView() {
         setError('Invalid npub format. Please provide a valid Nostr npub.');
         return;
       }
-    } catch (e) {
+    } catch {
       setError('Invalid npub format. Please provide a valid Nostr npub.');
       return;
     }
@@ -56,7 +56,7 @@ export default function NostrProjectView() {
     createEvent({
       kind: 38172,
       content: JSON.stringify({
-        payment_proof: 'pending', // In a real app, this would include Lightning payment proof
+        payment_proof: 'pending',
       }),
       tags: [
         ['p', project.id], // Reference to project

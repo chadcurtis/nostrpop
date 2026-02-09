@@ -27,7 +27,6 @@ import {
   ShoppingCart,
   Eye,
   FolderKanban,
-  ExternalLink,
   Users,
   Zap
 } from 'lucide-react';
@@ -317,12 +316,12 @@ const Index = () => {
   const { data: adminNotes, isLoading: notesLoading, error: notesError } = useLatestAdminNotes(3);
   const { data: latestCards, isLoading: cardsLoading, error: cardsError } = useLatestCards(3);
   const { data: featuredArtworks, isLoading: artworksLoading, error: artworksError } = useArtworks('all');
-  const { data: featuredProjects, isLoading: projectsLoading } = useFeaturedProjects();
-  const { data: featuredNostrProjects, isLoading: nostrProjectsLoading } = useFeaturedNostrProjects();
+  const { data: featuredProjects } = useFeaturedProjects();
+  const { data: featuredNostrProjects } = useFeaturedNostrProjects();
   const author = useAuthor(ADMIN_HEX);
   const metadata: NostrMetadata | undefined = author.data?.metadata;
 
-  const displayName = metadata?.name ?? genUserName(ADMIN_HEX);
+  const _displayName = metadata?.name ?? genUserName(ADMIN_HEX);
 
   // Get first 3 artworks for featured section
   const featuredArtworksList = featuredArtworks?.slice(0, 3) || [];

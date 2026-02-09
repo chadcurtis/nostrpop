@@ -255,13 +255,4 @@ export function useLNURL(lightningAddress?: string) {
   };
 }
 
-// WebLN type declarations
-declare global {
-  interface Window {
-    webln?: {
-      enable(): Promise<void>;
-      sendPayment(invoice: string): Promise<{ preimage: string }>;
-      makeInvoice(args: { amount?: number; defaultMemo?: string }): Promise<{ paymentRequest: string }>;
-    };
-  }
-}
+// WebLN type declarations are in vite-env.d.ts

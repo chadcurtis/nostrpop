@@ -227,7 +227,7 @@ export function BadgeManagement() {
             {/* Status */}
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
-              <Select value={status} onValueChange={(v) => setStatus(v as any)}>
+              <Select value={status} onValueChange={(v) => setStatus(v as 'active' | 'sold_out' | 'archived')}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

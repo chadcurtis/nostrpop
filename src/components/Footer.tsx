@@ -4,8 +4,8 @@ import { useFooterPages, useSocialMediaLinks } from '@/hooks/usePages';
 import { useNostrPublish } from '@/hooks/useNostrPublish';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { Mail, Send } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Send } from 'lucide-react';
 import BitPopArtLogo from '@/assets/bitpopart-logo.png';
 
 export function Footer() {

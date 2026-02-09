@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useNostr } from '@nostrify/react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useNostrPublish } from '@/hooks/useNostrPublish';
 import { useUploadFile } from '@/hooks/useUploadFile';
@@ -21,8 +21,7 @@ import {
   Trash2,
   Edit,
   X,
-  Upload,
-  Image as ImageIcon
+  Upload
 } from 'lucide-react';
 import { format } from 'date-fns';
 import type { NostrEvent } from '@nostrify/nostrify';

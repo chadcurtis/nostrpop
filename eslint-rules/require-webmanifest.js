@@ -64,8 +64,10 @@ export default {
           const rootPath = path.resolve(htmlDir, '.' + manifestPath);
           resolvedManifestPath = fs.existsSync(publicPath) ? publicPath : rootPath;
         } else {
-          // Relative path
-          resolvedManifestPath = path.resolve(htmlDir, manifestPath);
+          // Relative path - check both root and public directory
+          const rootPath = path.resolve(htmlDir, manifestPath);
+          const publicPath = path.resolve(htmlDir, 'public', manifestPath);
+          resolvedManifestPath = fs.existsSync(rootPath) ? rootPath : publicPath;
         }
         
         // Check if the manifest file exists

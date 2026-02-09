@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LoginArea } from '@/components/auth/LoginArea';
 import { CardManagement } from '@/components/cards/CardManagement';
 import { ProductManagement } from '@/components/marketplace/ProductManagement';
-import { CategoryManagement } from '@/components/marketplace/CategoryManagement';
 import { FundraiserManagement } from '@/components/fundraiser/FundraiserManagement';
 import { BlogPostManagement } from '@/components/blog/BlogPostManagement';
 import { PopUpManagement } from '@/components/popup/PopUpManagement';
@@ -24,27 +23,20 @@ import { AnalyticsSettings } from '@/components/analytics/AnalyticsSettings';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import {
   Plus,
-  FolderOpen,
   BarChart3,
-  Settings,
   Users,
   Shield,
   Sparkles,
   ArrowRight,
   TrendingUp,
-  Eye,
-  Edit,
-  Database,
   Palette,
   ShoppingBag,
-  Tags,
   CreditCard,
   Grid3X3,
   FileText,
   MapPin,
   User,
   FolderKanban,
-  Award,
   Share2,
   Mail,
   Target

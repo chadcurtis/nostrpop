@@ -26,7 +26,7 @@ import {
   Star,
 } from 'lucide-react';
 import type { NostrEvent } from '@nostrify/nostrify';
-import { generateProjectUUID, type ProjectData } from '@/lib/projectTypes';
+import { generateProjectUUID } from '@/lib/projectTypes';
 
 interface ProjectFormData {
   name: string;

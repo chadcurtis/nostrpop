@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useSeoMeta } from '@unhead/react';
 import { useNostr } from '@nostrify/react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,11 +11,10 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { ShareToNostrButton } from '@/components/ShareToNostrButton';
 import { ClawstrShare } from '@/components/ClawstrShare';
 import { ZapButton } from '@/components/ZapButton';
-import { FolderKanban, ExternalLink, Sparkles, ArrowRight, Users, Zap, Award, Share2 } from 'lucide-react';
+import { FolderKanban, Sparkles, ArrowRight, Users, Zap, Award, Share2 } from 'lucide-react';
 import { useNostrProjects } from '@/hooks/useNostrProjects';
 import { useBadges } from '@/hooks/useBadges';
 import type { ProjectData } from '@/lib/projectTypes';
-import type { NostrEvent } from '@nostrify/nostrify';
 
 const ADMIN_PUBKEY = '7d33ba57d8a6e8869a1f1d5215254597594ac0dbfeb01b690def8c461b82db35';
 
@@ -52,7 +50,7 @@ export default function Projects() {
   const { nostr } = useNostr();
   const navigate = useNavigate();
   const isAdmin = useIsAdmin();
-  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [_selectedProject, _setSelectedProject] = useState<string | null>(null);
 
   useSeoMeta({
     title: 'Projects - BitPopArt',
@@ -60,10 +58,10 @@ export default function Projects() {
   });
 
   // Fetch Nostr Projects (collaborative art)
-  const { data: nostrProjects = [], isLoading: nostrLoading } = useNostrProjects();
+  const { data: nostrProjects = [] } = useNostrProjects();
 
   // Fetch POP Badges
-  const { data: badges = [], isLoading: badgesLoading } = useBadges();
+  const { data: badges = [] } = useBadges();
 
   // Fetch custom projects from Nostr
   const { data: customProjects = [], isLoading } = useQuery({
