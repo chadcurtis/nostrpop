@@ -9,14 +9,17 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useTheme } from '@/hooks/useTheme';
 import { Menu, Moon, Sun, Shield, Search as SearchIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+// Get the base path from import.meta.env or default to '/'
+const basePath = import.meta.env.BASE_URL || '/';
+
 const navigationItems = [
-  { name: 'News', href: '/blog', icon: '📰' },
-  { name: 'Artist', href: '/artist', icon: '👨‍🎨' },
-  { name: 'PopUp', href: '/popup', icon: '🗺️' },
-  { name: 'Art', href: '/art', icon: '🖼️' },
-  { name: 'Projects', href: '/projects', icon: '🎨' },
-  { name: 'Fundraising', href: '/fundraising', icon: '🏆' },
-  { name: 'Shop', href: '/shop', icon: '🛍️' },
+  { name: 'News', href: '/blog', icon: `${basePath}News_button_1.svg` },
+  { name: 'Artist', href: '/artist', icon: `${basePath}artist_button_1.svg` },
+  { name: 'PopUp', href: '/popup', icon: `${basePath}PopUP_button_1.svg` },
+  { name: 'Art', href: '/art', icon: `${basePath}Art_button_1.svg` },
+  { name: 'Projects', href: '/projects', icon: `${basePath}projects_button_1.svg` },
+  { name: 'Fundraising', href: '/fundraising', icon: `${basePath}fundrasing_button_1.svg` },
+  { name: 'Shop', href: '/shop', icon: `${basePath}Shop_button_1.svg` },
 ];
 
 export function Navigation() {
@@ -48,7 +51,7 @@ export function Navigation() {
             className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
           >
             <img 
-              src={`${import.meta.env.BASE_URL}bitpopart-logo.png`} 
+              src={`${basePath}bitpopart-logo.png`} 
               alt="BitPopArt" 
               className="h-10 w-10 rounded-lg"
             />
@@ -70,7 +73,7 @@ export function Navigation() {
                     : "text-muted-foreground hover:text-foreground hover:bg-accent"
                 )}
               >
-                <span className="text-base">{item.icon}</span>
+                <img src={item.icon} alt={item.name} className="h-5 w-5" />
                 <span>{item.name}</span>
               </Link>
             ))}
@@ -169,7 +172,7 @@ export function Navigation() {
                             : "text-muted-foreground hover:text-foreground hover:bg-accent"
                         )}
                       >
-                        <span className="text-xl">{item.icon}</span>
+                        <img src={item.icon} alt={item.name} className="h-6 w-6" />
                         <span>{item.name}</span>
                       </Link>
                     ))}
