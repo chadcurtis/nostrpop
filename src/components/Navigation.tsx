@@ -9,8 +9,6 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useTheme } from '@/hooks/useTheme';
 import { Menu, Moon, Sun, Shield, Search as SearchIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import BitPopArtLogo from '@/assets/bitpopart-logo.png';
-
 const navigationItems = [
   { name: 'News', href: '/blog', icon: '📰' },
   { name: 'Artist', href: '/artist', icon: '👨‍🎨' },
@@ -50,7 +48,7 @@ export function Navigation() {
             className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
           >
             <img 
-              src={BitPopArtLogo} 
+              src={`${import.meta.env.BASE_URL}bitpopart-logo.png`} 
               alt="BitPopArt" 
               className="h-10 w-10 rounded-lg"
             />
