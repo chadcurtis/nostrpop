@@ -42,8 +42,14 @@ const Shop = () => {
   const { categoryNames } = useCategories();
 
   // Get initial tab from URL params
-  const initialTab = searchParams.get('tab') === 'admin' && isAdmin ? 'admin' : 'marketplace';
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const getInitialTab = () => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'admin' && isAdmin) return 'admin';
+    if (tabParam === 'fundraiser-admin' && isAdmin) return 'fundraiser-admin';
+    if (tabParam === 'fundraisers') return 'fundraisers';
+    return 'marketplace';
+  };
+  const [activeTab, setActiveTab] = useState(getInitialTab());
 
   // Get initial category from URL params
   const initialCategory = searchParams.get('category') || 'all';
@@ -54,6 +60,10 @@ const Shop = () => {
     const tabParam = searchParams.get('tab');
     if (tabParam === 'admin' && isAdmin) {
       setActiveTab('admin');
+    } else if (tabParam === 'fundraiser-admin' && isAdmin) {
+      setActiveTab('fundraiser-admin');
+    } else if (tabParam === 'fundraisers') {
+      setActiveTab('fundraisers');
     } else {
       setActiveTab('marketplace');
     }

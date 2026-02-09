@@ -453,11 +453,11 @@ const Admin = () => {
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-24 flex flex-col items-center justify-center gap-2 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                    onClick={() => navigate('/blog')}
+                    className="h-24 flex flex-col items-center justify-center gap-2 hover:bg-teal-50 dark:hover:bg-teal-900/20"
+                    onClick={() => navigate('/shop?tab=fundraisers')}
                   >
-                    <FileText className="h-6 w-6 text-blue-600" />
-                    <span className="text-sm font-medium">View News</span>
+                    <Target className="h-6 w-6 text-teal-600" />
+                    <span className="text-sm font-medium">Fundraising</span>
                   </Button>
                 </div>
               </div>
