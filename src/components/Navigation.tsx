@@ -9,6 +9,7 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useTheme } from '@/hooks/useTheme';
 import { Menu, Moon, Sun, Shield, Search as SearchIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
 // Get the base path from import.meta.env or default to '/'
 const basePath = import.meta.env.BASE_URL || '/';
 
@@ -51,9 +52,9 @@ export function Navigation() {
             className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
           >
             <img 
-              src={`${basePath}bitpopart-logo.png`} 
-              alt="BitPopArt" 
-              className="h-10 w-10 rounded-lg"
+              src={`${basePath}B-Funny_avatar_orange.svg`}
+              alt="BitPopArt Logo" 
+              className="h-10 w-10"
             />
             <span className="font-bold text-xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
               BitPopArt
@@ -67,7 +68,7 @@ export function Navigation() {
                 key={item.name}
                 to={item.href}
                 className={cn(
-                  "flex items-center space-x-1 px-4 py-2 rounded-full text-sm font-medium transition-colors",
+                  "flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-colors",
                   isActive(item.href)
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-accent"
