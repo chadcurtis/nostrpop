@@ -83,6 +83,11 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
+                <Link to="/artist" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Artist
+                </Link>
+              </li>
+              <li>
                 <Link to="/art" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Art Gallery
                 </Link>
@@ -93,8 +98,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/badges" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  POP Badges
+                <Link to="/fundraising" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Fundraising
                 </Link>
               </li>
               <li>
